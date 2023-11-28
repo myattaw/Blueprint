@@ -1,0 +1,8 @@
+settings:
+
+blueprint-item:
+  type: PAPER
+  name: "&5{name} Blueprint"
+  lore:
+    - "&7Place this item to start"
+    - "&7Generating a structure."
