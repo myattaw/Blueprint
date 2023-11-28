@@ -90,11 +90,16 @@ public class BlueprintGenerator {
             int currY = pos.getBlockY(); // get initial Y of the block
             while (blockIndex < blocks.size() && currY == blocks.get(blockIndex).getPosition().getBlockY()) { // check if we are on the same layer
                 Location loc = location.clone().add(blocks.get(blockIndex).getPosition());
-                loc.getBlock().setBlockData((BlockData) blocks.get(blockIndex++).getBlockData(), false);
+
+                if (loc.getBlock().isLiquid() || loc.getBlock().getType().isAir()) {
+                    loc.getBlock().setBlockData((BlockData) blocks.get(blockIndex++).getBlockData(), false);
+                }
             }
         } else {
             Location loc = location.clone().add(pos);
-            loc.getBlock().setBlockData((BlockData) blocks.get(blockIndex++).getBlockData(), false);
+            if (loc.getBlock().isLiquid() || loc.getBlock().getType().isAir()) {
+                loc.getBlock().setBlockData((BlockData) blocks.get(blockIndex++).getBlockData(), false);
+            }
         }
 
         return blockIndex >= blocks.size(); // we reached the end of the build

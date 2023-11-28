@@ -16,7 +16,7 @@ public class LanguageFile extends ConfigFile {
     public LanguageFile init() {
         this.getPlugin().getLogger().log(Level.INFO, "Successfully created language.yml");
         for (Message message : Message.values()) {
-            if (getConfig().getStringList(message.getConfig()).size() != 0) {
+            if (!getConfig().getStringList(message.getConfig()).isEmpty()) {
                 message.setMessages(getConfig().getStringList(message.getConfig()).toArray(new String[0]));
             } else if (getConfig().contains(message.getConfig())) {
                 message.setMessage(getConfig().getString(message.getConfig()));

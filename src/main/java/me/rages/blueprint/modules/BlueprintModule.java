@@ -6,6 +6,7 @@ import me.lucko.helper.Schedulers;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.terminable.TerminableConsumer;
 import me.lucko.helper.terminable.module.TerminableModule;
+import me.lucko.helper.text3.Text;
 import me.lucko.helper.utils.Players;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Message;
@@ -60,6 +61,11 @@ public class BlueprintModule implements TerminableModule {
                     } else {
                         switch (arg.toLowerCase()) {
                             case "give":
+                                if (!cmd.sender().hasPermission("blueprint.give")) {
+                                    cmd.sender().sendMessage(ChatColor.RED + "You do not have access to this command.");
+                                    return;
+                                }
+
                                 Player target = cmd.arg(1).parse(Player.class).orElse(null);
                                 if (target == null) {
                                     cmd.sender().sendMessage(ChatColor.RED + "Could not find the specified player.");
@@ -74,10 +80,16 @@ public class BlueprintModule implements TerminableModule {
                                 }
                                 break;
                             case "list":
+                                if (!cmd.sender().hasPermission("blueprint.list")) {
+                                    cmd.sender().sendMessage(ChatColor.RED + "You do not have access to this command.");
+                                    return;
+                                }
+
+                                cmd.sender().sendMessage(Text.colorize("&7------[ &9Blueprints &7]------"));
+                                cmd.sender().sendMessage(ChatColor.GRAY + String.join(",", plugin.getBlueprintDataMap().keySet()));
 
                                 break;
                             default:
-
                                 break;
                         }
                     }
@@ -99,19 +111,19 @@ public class BlueprintModule implements TerminableModule {
                         if (itemStack != null && name != null) {
                             //TODO: add build check here
                             Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
-                            plugin.getBlueprintGenerators().add(
-                                    BlueprintGenerator.create(name, BlueprintDirection.fromRotation(direction), loc)
-                                            .addPlayer(player)
-                                            .setFastMode(true)
-                            );
+                            if (removeItem(event.getPlayer(), itemStack, 1)) {
+                                plugin.getBlueprintGenerators().add(
+                                        BlueprintGenerator.create(name, BlueprintDirection.fromRotation(direction), loc)
+                                                .addPlayer(player)
+                                                .setFastMode(true)
+                                );
 
-                            Points<Vector, Vector> points = plugin.getBlueprintDataMap().get(name).getPoints().get(BlueprintDirection.fromRotation(direction));
+                                Points<Vector, Vector> points = plugin.getBlueprintDataMap().get(name).getPoints().get(BlueprintDirection.fromRotation(direction));
 
-                            for (String message : Message.BLUEPRINT_TASK_STARTED.getAllColorized()) {
-                                player.sendMessage(message.replace("{time}", points.getMax().getY() - points.getMin().getY() + " Seconds"));
+                                Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
+                                        .map(message -> message.replace("{time}", points.getMax().getY() - points.getMin().getY() + " Seconds"))
+                                        .forEach(player::sendMessage);
                             }
-
-                            removeItem(event.getPlayer(), itemStack, 1);
                         }
                     }
 
@@ -183,7 +195,7 @@ public class BlueprintModule implements TerminableModule {
     }
 
     public static boolean isCustomNameMatch(ItemStack stack1, ItemStack stack2) {
-
+        // change this to check namespace keys
         String customName1 = stack1.getItemMeta().getDisplayName();
         String customName2 = stack2.getItemMeta().getDisplayName();
 
