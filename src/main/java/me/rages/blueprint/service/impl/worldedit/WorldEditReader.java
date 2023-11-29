@@ -1,6 +1,6 @@
 package me.rages.blueprint.service.impl.worldedit;
 
-import me.rages.blueprint.data.blueprint.BlueprintData;
+import me.rages.blueprint.data.blueprint.Blueprint;
 
 import java.io.File;
 import java.util.Map;
@@ -16,6 +16,6 @@ public interface WorldEditReader {
      * @param file the schematic file
      * @param schemDataMap storage for all schematics
      */
-    void readSchematic(File file, Map<String, BlueprintData> schemDataMap);
+    void readSchematic(File file, Map<String, Blueprint> schemDataMap);
 
 }

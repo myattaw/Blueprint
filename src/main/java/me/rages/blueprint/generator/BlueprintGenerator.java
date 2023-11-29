@@ -3,7 +3,7 @@ package me.rages.blueprint.generator;
 import lombok.Getter;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.blueprint.BlueprintBlock;
-import me.rages.blueprint.data.blueprint.BlueprintData;
+import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import org.bukkit.Location;
 import org.bukkit.block.data.BlockData;
@@ -82,7 +82,7 @@ public class BlueprintGenerator {
      * @param blueprintDataMap
      * @return if the schematic is finished
      */
-    public boolean build(BlueprintPlugin plugin, Map<String, BlueprintData> blueprintDataMap) {
+    public boolean build(BlueprintPlugin plugin, Map<String, Blueprint> blueprintDataMap) {
         // add fast place
         List<BlueprintBlock> blocks = blueprintDataMap.get(key).getBlockPositions().get(direction);
         Vector pos = blocks.get(blockIndex).getPosition();

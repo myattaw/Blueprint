@@ -1,7 +1,7 @@
 package me.rages.blueprint.service.impl;
 
 import me.rages.blueprint.BlueprintPlugin;
-import me.rages.blueprint.data.blueprint.BlueprintData;
+import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.service.PluginService;
 import me.rages.blueprint.service.impl.worldedit.WorldEdit7Reader;
 import me.rages.blueprint.service.impl.worldedit.WorldEditReader;
@@ -41,7 +41,7 @@ public class WorldEditService implements PluginService {
         }
     }
 
-    public void readSchematic(File file, Map<String, BlueprintData> blueprintDataMap) {
+    public void readSchematic(File file, Map<String, Blueprint> blueprintDataMap) {
         worldEditReader.readSchematic(file, blueprintDataMap);
     }
 

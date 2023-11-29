@@ -16,7 +16,7 @@ import com.sk89q.worldedit.world.block.BaseBlock;
 
 import me.rages.blueprint.data.Points;
 import me.rages.blueprint.data.blueprint.BlueprintBlock;
-import me.rages.blueprint.data.blueprint.BlueprintData;
+import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import org.bukkit.util.Vector;
 
@@ -31,8 +31,8 @@ public class WorldEdit7Reader implements WorldEditReader {
 
     @Override
     @SuppressWarnings("unchecked")
-    public void readSchematic(File file, Map<String, BlueprintData> schemDataMap) {
-        BlueprintData schemData = new BlueprintData(file.getName());
+    public void readSchematic(File file, Map<String, Blueprint> schemDataMap) {
+        Blueprint schemData = new Blueprint(file.getName());
         ClipboardFormat format = ClipboardFormats.findByFile(file);
         for (BlueprintDirection direction : BlueprintDirection.values()) {
             int rotation = direction.getRotation();

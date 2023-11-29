@@ -11,9 +11,14 @@ import me.lucko.helper.utils.Players;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Message;
 import me.rages.blueprint.data.Points;
+import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
-import org.bukkit.*;
+import me.rages.blueprint.util.Util;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -118,11 +123,15 @@ public class BlueprintModule implements TerminableModule {
                                                 .setFastMode(true)
                                 );
 
-                                Points<Vector, Vector> points = plugin.getBlueprintDataMap().get(name).getPoints().get(BlueprintDirection.fromRotation(direction));
+                                Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
+                                Points<Vector, Vector> points = blueprint.getPoints().get(BlueprintDirection.fromRotation(direction));
 
                                 Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
                                         .map(message -> message.replace("{time}", points.getMax().getY() - points.getMin().getY() + " Seconds"))
                                         .forEach(player::sendMessage);
+
+                                blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
+                                Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
                             }
                         }
                     }

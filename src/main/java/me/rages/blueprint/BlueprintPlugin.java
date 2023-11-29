@@ -4,7 +4,7 @@ import lombok.Getter;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import me.lucko.helper.plugin.ap.Plugin;
 import me.rages.blueprint.config.LanguageFile;
-import me.rages.blueprint.data.blueprint.BlueprintData;
+import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.generator.BlueprintGenerator;
 import me.rages.blueprint.modules.BlueprintModule;
 import me.rages.blueprint.service.ServiceManager;
@@ -23,7 +23,7 @@ import java.util.logging.Level;
 )
 public final class BlueprintPlugin extends ExtendedJavaPlugin {
 
-    @Getter private Map<String, BlueprintData> blueprintDataMap = new HashMap<>();
+    @Getter private Map<String, Blueprint> blueprintDataMap = new HashMap<>();
     @Getter private List<BlueprintGenerator> blueprintGenerators = new ArrayList<>();
 
     @Getter private File schematicsFolder;
