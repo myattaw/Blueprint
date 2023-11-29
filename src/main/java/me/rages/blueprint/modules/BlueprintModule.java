@@ -10,11 +10,10 @@ import me.lucko.helper.text3.Text;
 import me.lucko.helper.utils.Players;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Message;
-import me.rages.blueprint.data.Points;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
-import me.rages.blueprint.util.Util;
+import me.rages.blueprint.ui.ConfirmUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -24,7 +23,6 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -112,26 +110,18 @@ public class BlueprintModule implements TerminableModule {
 
                     Player player = event.getPlayer();
 
-                    if (event.getClickedBlock() != null && event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                        if (itemStack != null && name != null) {
-                            //TODO: add build check here
-                            Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
-                            if (removeItem(event.getPlayer(), itemStack, 1)) {
-                                plugin.getBlueprintGenerators().add(
-                                        BlueprintGenerator.create(name, BlueprintDirection.fromRotation(direction), loc)
-                                                .addPlayer(player)
-                                                .setFastMode(true)
-                                );
-
-                                Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
-                                Points<Vector, Vector> points = blueprint.getPoints().get(BlueprintDirection.fromRotation(direction));
-
-                                Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
-                                        .map(message -> message.replace("{time}", points.getMax().getY() - points.getMin().getY() + " Seconds"))
-                                        .forEach(player::sendMessage);
-
-                                blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
-                                Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
+                    if (event.getClickedBlock() != null) {
+                        Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
+                        Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
+                        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                            blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
+                            Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
+                        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                            if (itemStack != null && name != null) {
+                                //TODO: add build check here
+                                if (blueprint != null) {
+                                    new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
+                                }
                             }
                         }
                     }
@@ -143,7 +133,7 @@ public class BlueprintModule implements TerminableModule {
                 Iterator<BlueprintGenerator> iterator = plugin.getBlueprintGenerators().iterator();
                 while (iterator.hasNext()) {
                     BlueprintGenerator generator = iterator.next();
-                    if (generator.build(plugin, plugin.getBlueprintDataMap())) { // check if we finished building
+                    if (generator.build(plugin.getBlueprintDataMap())) { // check if we finished building
                         generator.getPlayer().sendMessage(Message.BLUEPRINT_TASK_FINISHED.getColorized());
                         iterator.remove();
                     }
@@ -159,8 +149,7 @@ public class BlueprintModule implements TerminableModule {
                 .transformMeta(itemMeta -> {
                     itemMeta.getPersistentDataContainer().set(blueprintKey, PersistentDataType.STRING, name);
                     itemMeta.getPersistentDataContainer().set(directionKey, PersistentDataType.INTEGER, 0);
-                })
-                .build();
+                }).build();
 
         player.getInventory().addItem(itemStack);
     }

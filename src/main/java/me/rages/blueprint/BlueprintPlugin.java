@@ -19,6 +19,7 @@ import java.util.logging.Level;
         hardDepends = {"helper"},
         softDepends = {"FastAsyncWorldEdit", "WorldEdit"},
         authors = {"Rages"},
+        apiVersion = "1.18",
         description = "Placeable schematic items."
 )
 public final class BlueprintPlugin extends ExtendedJavaPlugin {
@@ -30,6 +31,7 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
 
     @Getter private ServiceManager serviceManager;
     @Getter private LanguageFile languageFile;
+    @Getter private BlueprintModule blueprintModule;
 
 
     @Override
@@ -38,7 +40,9 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
         this.serviceManager = ServiceManager.createServiceManager(this)
                 .registerService("worldedit", new WorldEditService());
 
-        this.bindModule(new BlueprintModule(this));
+        this.blueprintModule = new BlueprintModule(this);
+
+        this.bindModule(blueprintModule);
         this.languageFile = new LanguageFile(this, "lang").init();
 
         schematicsFolder = new File(getDataFolder(), "schematics");

@@ -1,5 +1,6 @@
 package me.rages.blueprint.data.blueprint;
 
+import com.google.common.io.Files;
 import lombok.Getter;
 import me.lucko.helper.serialize.BlockPosition;
 import me.rages.blueprint.data.Points;
@@ -14,7 +15,7 @@ import java.util.*;
 
 public class Blueprint {
 
-    private String name;
+    @Getter private String name;
 
     @Getter
     private Map<BlueprintDirection, List<BlueprintBlock>> blockPositions;
@@ -24,7 +25,7 @@ public class Blueprint {
     private Map<UUID, Set<BlockPosition>> outlineCache = new HashMap<>();
 
     public Blueprint(String name) {
-        this.name = name;
+        this.name = Files.getNameWithoutExtension(name);
         this.blockPositions = new HashMap<>();
         this.points = new HashMap<>();
         for (BlueprintDirection direction : BlueprintDirection.values()) {

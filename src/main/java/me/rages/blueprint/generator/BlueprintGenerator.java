@@ -78,11 +78,10 @@ public class BlueprintGenerator {
     /**
      * Builds schematic
      *
-     * @param plugin
      * @param blueprintDataMap
      * @return if the schematic is finished
      */
-    public boolean build(BlueprintPlugin plugin, Map<String, Blueprint> blueprintDataMap) {
+    public boolean build(Map<String, Blueprint> blueprintDataMap) {
         // add fast place
         List<BlueprintBlock> blocks = blueprintDataMap.get(key).getBlockPositions().get(direction);
         Vector pos = blocks.get(blockIndex).getPosition();
@@ -90,7 +89,6 @@ public class BlueprintGenerator {
             int currY = pos.getBlockY(); // get initial Y of the block
             while (blockIndex < blocks.size() && currY == blocks.get(blockIndex).getPosition().getBlockY()) { // check if we are on the same layer
                 Location loc = location.clone().add(blocks.get(blockIndex).getPosition());
-
                 if (loc.getBlock().isLiquid() || loc.getBlock().getType().isAir()) {
                     loc.getBlock().setBlockData((BlockData) blocks.get(blockIndex++).getBlockData(), false);
                 }

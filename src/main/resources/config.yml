@@ -6,3 +6,39 @@ blueprint-item:
   lore:
     - "&7Place this item to start"
     - "&7Generating a structure."
+    - ""
+    - "&7Direction: &9{direction}"
+
+confirm-gui:
+  title: "Click to Confirm"
+  items:
+    confirm:
+      type: LIME_STAINED_GLASS_PANE
+      name: "&a&lCONFIRM"
+      lore:
+        - "&7Click to confirm"
+    cancel:
+      type: RED_STAINED_GLASS_PANE
+      name: "&c&lCANCEL"
+      lore:
+        - "&7Click to cancel"
+
+blueprint-gui:
+  title: "{name} Placement"
+  items:
+    rotate-left:
+      type: PAPER
+      name: "&5{name} Blueprint"
+      lore:
+        - "&7Rotate the blueprint left"
+        - "&7by clicking this button"
+        - " "
+        - "&7Direction: &9{direction}"
+    rotate-right:
+      type: PAPER
+      name: "&5{name} Blueprint"
+      lore:
+        - "&7Rotate the blueprint right"
+        - "&7by clicking this button"
+        - " "
+        - "&7Direction: &9{direction}"
