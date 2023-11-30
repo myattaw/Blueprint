@@ -110,19 +110,25 @@ public class BlueprintModule implements TerminableModule {
 
                     Player player = event.getPlayer();
 
+
                     if (event.getClickedBlock() != null) {
-                        Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
                         Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
-                        if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                            blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
-                            Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
-                        } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                            if (itemStack != null && name != null) {
-                                //TODO: add build check here
-                                if (blueprint != null) {
-                                    new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
+                        Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
+
+                        if (plugin.getServiceManager().getBuildCheckService().canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
+                            if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
+                                blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
+                                Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
+                            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                                if (itemStack != null && name != null) {
+                                    //TODO: add build check here
+                                    if (blueprint != null) {
+                                        new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
+                                    }
                                 }
                             }
+                        } else {
+                            player.sendMessage(Message.BLUEPRINT_PLACEMENT_FAILED.getColorized());
                         }
                     }
 

@@ -9,6 +9,8 @@ public enum Message {
 
 
     // Listeners
+    BLUEPRINT_PLACEMENT_FAILED("blueprint-placement-failed", "&cYou cannot place a blueprint here!"),
+
     BLUEPRINT_TASK_STARTED("blueprint-task-started", "", "&7You have started a new blueprint generator.", "&7The estimated time is &9{time} &7to complete.", ""),
     BLUEPRINT_TASK_FINISHED("blueprint-task-finished", "&7Your blueprint task has successfully completed."),
 

@@ -1,6 +1,7 @@
 package me.rages.blueprint.service;
 
 import me.rages.blueprint.BlueprintPlugin;
+import me.rages.blueprint.service.impl.BuildCheckService;
 import me.rages.blueprint.service.impl.WorldEditService;
 
 import java.util.HashMap;
@@ -52,6 +53,10 @@ public class ServiceManager {
 
     public WorldEditService getWorldEdit() {
         return (WorldEditService) pluginMap.get("worldedit");
+    }
+
+    public BuildCheckService getBuildCheckService() {
+        return (BuildCheckService) pluginMap.get("build");
     }
 
 

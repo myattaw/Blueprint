@@ -8,6 +8,7 @@ import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.generator.BlueprintGenerator;
 import me.rages.blueprint.modules.BlueprintModule;
 import me.rages.blueprint.service.ServiceManager;
+import me.rages.blueprint.service.impl.BuildCheckService;
 import me.rages.blueprint.service.impl.WorldEditService;
 
 import java.io.File;
@@ -17,27 +18,34 @@ import java.util.logging.Level;
 @Plugin(
         name = "Blueprint",
         hardDepends = {"helper"},
-        softDepends = {"FastAsyncWorldEdit", "WorldEdit"},
+        softDepends = {"FastAsyncWorldEdit", "WorldEdit", "ASkyBlock"},
         authors = {"Rages"},
         apiVersion = "1.18",
         description = "Placeable schematic items."
 )
 public final class BlueprintPlugin extends ExtendedJavaPlugin {
 
-    @Getter private Map<String, Blueprint> blueprintDataMap = new HashMap<>();
-    @Getter private List<BlueprintGenerator> blueprintGenerators = new ArrayList<>();
+    @Getter
+    private Map<String, Blueprint> blueprintDataMap = new HashMap<>();
+    @Getter
+    private List<BlueprintGenerator> blueprintGenerators = new ArrayList<>();
 
-    @Getter private File schematicsFolder;
+    @Getter
+    private File schematicsFolder;
 
-    @Getter private ServiceManager serviceManager;
-    @Getter private LanguageFile languageFile;
-    @Getter private BlueprintModule blueprintModule;
+    @Getter
+    private ServiceManager serviceManager;
+    @Getter
+    private LanguageFile languageFile;
+    @Getter
+    private BlueprintModule blueprintModule;
 
 
     @Override
     protected void enable() {
         this.saveDefaultConfig();
         this.serviceManager = ServiceManager.createServiceManager(this)
+                .registerService("build", new BuildCheckService())
                 .registerService("worldedit", new WorldEditService());
 
         this.blueprintModule = new BlueprintModule(this);
@@ -52,7 +60,7 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
                 this.getPluginLoader().disablePlugin(this);
                 return;
             } else {
-                this.getLogger().log(Level.INFO, "Created schematics directory: /plugins/SchemBucket/schematics");
+                this.getLogger().log(Level.INFO, "Created schematics directory: /plugins/Blueprint/schematics");
             }
         }
 

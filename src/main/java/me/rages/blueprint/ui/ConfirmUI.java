@@ -52,14 +52,15 @@ public class ConfirmUI extends Gui {
                                                             .setFastMode(true)
                                             );
                                             Points<Vector, Vector> points = blueprint.getPoints().get(direction);
+
                                             Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
                                                     .map(message -> message.replace("{time}", points.getMax().getY() - points.getMin().getY() + " Seconds"))
                                                     .forEach(getPlayer()::sendMessage);
 
+                                            blueprint.clearOutlines(getPlayer());
                                         } else {
                                             getPlayer().sendMessage(ChatColor.RED + "Failed to find blueprint item in your inventory.");
                                         }
-
                                         getPlayer().closeInventory();
                                     })
                     )
@@ -70,6 +71,12 @@ public class ConfirmUI extends Gui {
                             .name(plugin.getConfig().getString("confirm-gui.items.cancel.name"))
                             .lore(plugin.getConfig().getStringList("confirm-gui.items.cancel.lore"))
                             .build(() -> getPlayer().closeInventory())));
+
+            setItem(4, ItemStackBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").build(null));
+            setItem(13, ItemStackBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").build(null));
+            setItem(22, ItemStackBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").build(null));
+
+
         }
     }
 }
