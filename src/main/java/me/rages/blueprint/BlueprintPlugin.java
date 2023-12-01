@@ -25,20 +25,14 @@ import java.util.logging.Level;
 )
 public final class BlueprintPlugin extends ExtendedJavaPlugin {
 
-    @Getter
-    private Map<String, Blueprint> blueprintDataMap = new HashMap<>();
-    @Getter
-    private List<BlueprintGenerator> blueprintGenerators = new ArrayList<>();
+    @Getter private Map<String, Blueprint> blueprintDataMap = new HashMap<>();
+    @Getter private List<BlueprintGenerator> blueprintGenerators = new ArrayList<>();
 
-    @Getter
-    private File schematicsFolder;
+    @Getter private File schematicsFolder;
 
-    @Getter
-    private ServiceManager serviceManager;
-    @Getter
-    private LanguageFile languageFile;
-    @Getter
-    private BlueprintModule blueprintModule;
+    @Getter private ServiceManager serviceManager;
+    @Getter private LanguageFile languageFile;
+    @Getter private BlueprintModule blueprintModule;
 
 
     @Override

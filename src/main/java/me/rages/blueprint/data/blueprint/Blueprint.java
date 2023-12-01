@@ -17,10 +17,8 @@ public class Blueprint {
 
     @Getter private String name;
 
-    @Getter
-    private Map<BlueprintDirection, List<BlueprintBlock>> blockPositions;
-    @Getter
-    private Map<BlueprintDirection, Points<Vector, Vector>> points;
+    @Getter private Map<BlueprintDirection, List<BlueprintBlock>> blockPositions;
+    @Getter private Map<BlueprintDirection, Points<Vector, Vector>> points;
 
     private Map<UUID, Set<BlockPosition>> outlineCache = new HashMap<>();
 

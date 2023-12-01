@@ -1,5 +1,6 @@
 package me.rages.blueprint.modules;
 
+import lombok.Getter;
 import me.lucko.helper.Commands;
 import me.lucko.helper.Events;
 import me.lucko.helper.Schedulers;
@@ -15,6 +16,7 @@ import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
 import me.rages.blueprint.service.impl.BuildCheckService;
 import me.rages.blueprint.ui.ConfirmUI;
+import me.rages.blueprint.ui.RotateUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,12 +30,13 @@ import org.bukkit.persistence.PersistentDataType;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 public class BlueprintModule implements TerminableModule {
 
     private BlueprintPlugin plugin;
     private NamespacedKey blueprintKey;
-    private NamespacedKey directionKey;
+    @Getter private NamespacedKey directionKey;
 
     public BlueprintModule(BlueprintPlugin plugin) {
         this.plugin = plugin;
@@ -75,7 +78,7 @@ public class BlueprintModule implements TerminableModule {
                                     cmd.sender().sendMessage(ChatColor.RED + "Could not find the specified player.");
                                 } else {
                                     String name = cmd.rawArg(2).toLowerCase();
-                                    giveBlueprintItem(target, name);
+                                    target.getInventory().addItem(getBlueprintItem(target, name, 0, 1));
                                     target.sendMessage(Message.BLUEPRINT_ITEM_RECEIVED.getColorized().replace("{name}", name));
                                     cmd.sender().sendMessage(Message.BLUEPRINT_ITEM_GIVEN.getColorized()
                                             .replace("{name}", name)
@@ -120,13 +123,19 @@ public class BlueprintModule implements TerminableModule {
 
                         if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
                             if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                                blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
-                                Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
-                            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                                 if (itemStack != null && name != null) {
-                                    //TODO: add build check here
-                                    if (blueprint != null) {
-                                        new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
+                                    new RotateUI(plugin, blueprint, player, itemStack).open();
+                                }
+                            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                                if (player.isSneaking()) {
+                                    blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
+                                    Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
+                                } else {
+                                    if (itemStack != null && name != null) {
+                                        //TODO: add build check here
+                                        if (blueprint != null) {
+                                            new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
+                                        }
                                     }
                                 }
                             }
@@ -151,16 +160,24 @@ public class BlueprintModule implements TerminableModule {
         }, 1, TimeUnit.SECONDS, 1, TimeUnit.SECONDS).bindWith(consumer);
     }
 
-    public void giveBlueprintItem(Player player, String name) {
+    public ItemStack getBlueprintItem(Player player, String name, int direction, int amount) {
         ItemStack itemStack = ItemStackBuilder.of(Material.valueOf(plugin.getConfig().getString("blueprint-item.type")))
                 .name(plugin.getConfig().getString("blueprint-item.name").replace("{name}", name))
-                .lore(plugin.getConfig().getStringList("blueprint-item.lore"))
+                .transformMeta(itemMeta -> {
+                    List<String> itemLore = plugin.getConfig().getStringList("blueprint-item.lore")
+                            .stream()
+                            .map(lore -> Text.colorize(lore.replace("{direction}", Objects.requireNonNull(BlueprintDirection.fromRotation(direction)).getName())))
+                            .collect(Collectors.toList());
+                    itemMeta.setLore(itemLore);
+                })
+                .amount(amount)
                 .transformMeta(itemMeta -> {
                     itemMeta.getPersistentDataContainer().set(blueprintKey, PersistentDataType.STRING, name);
                     itemMeta.getPersistentDataContainer().set(directionKey, PersistentDataType.INTEGER, 0);
                 }).build();
 
-        player.getInventory().addItem(itemStack);
+
+        return itemStack;
     }
 
     public boolean removeItem(Player player, ItemStack itemStack, int amount) {

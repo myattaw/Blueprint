@@ -6,12 +6,18 @@ package me.rages.blueprint.data.blueprint;
  **/
 public enum BlueprintDirection {
 
-    NORTH(0), EAST(90), SOUTH(180), WEST(270);
+    NORTH("North", 0), EAST("East", 90), SOUTH("South", 180), WEST("West", 270);
 
+    private final String name;
     private final int rotation;
 
-    BlueprintDirection(int rotation) {
+    BlueprintDirection(String name, int rotation) {
+        this.name = name;
         this.rotation = rotation;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getRotation() {
@@ -23,6 +29,16 @@ public enum BlueprintDirection {
             if (direction.getRotation() == rotation) return direction;
         }
         return null;
+    }
+
+    public BlueprintDirection rightDirection() {
+        int nextRotation = (rotation + 90) % 360;
+        return fromRotation(nextRotation);
+    }
+
+    public BlueprintDirection leftDirection() {
+        int nextRotation = (rotation - 90 + 360) % 360;
+        return fromRotation(nextRotation);
     }
 
 }

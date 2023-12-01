@@ -23,22 +23,22 @@ confirm-gui:
       lore:
         - "&7Click to cancel"
 
-blueprint-gui:
+rotate-gui:
   title: "{name} Placement"
   items:
     rotate-left:
-      type: PAPER
+      type: COMPASS
       name: "&5{name} Blueprint"
       lore:
         - "&7Rotate the blueprint left"
         - "&7by clicking this button"
         - " "
-        - "&7Direction: &9{direction}"
+        - "&7New Direction: &9{direction}"
     rotate-right:
-      type: PAPER
+      type: COMPASS
       name: "&5{name} Blueprint"
       lore:
         - "&7Rotate the blueprint right"
         - "&7by clicking this button"
         - " "
-        - "&7Direction: &9{direction}"
+        - "&7New Direction: &9{direction}"
