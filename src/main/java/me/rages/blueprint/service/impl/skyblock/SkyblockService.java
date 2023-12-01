@@ -1,5 +1,7 @@
 package me.rages.blueprint.service.impl.skyblock;
 
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblock;
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import com.wasteofplastic.askyblock.ASkyBlockAPI;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
@@ -11,7 +13,7 @@ import org.bukkit.util.Vector;
 
 public class SkyblockService implements PluginService {
 
-    private final ASkyBlockAPI api = ASkyBlockAPI.getInstance();
+//    private final ASkyBlockAPI api = ASkyBlockAPI.getInstance();
 
     @Override
     public SkyblockService setup(BlueprintPlugin plugin) {
@@ -46,18 +48,18 @@ public class SkyblockService implements PluginService {
 
     public boolean canPlayerBuild(Player player, Location location) {
 
-        if(api.getIslandAt(location) == null)
+        if(SuperiorSkyblockAPI.getIslandAt(location) == null)
         {
             return true;
         }
 
-        return api.getIslandAt(location).getMembers().contains(player.getUniqueId());
+        return SuperiorSkyblockAPI.getIslandAt(location).getCoopPlayers().contains(SuperiorSkyblockAPI.getPlayer(player.getUniqueId()));
     }
 
 
 
     @Override
     public String[] pluginNames() {
-        return new String[]{"ASkyBlock"};
+        return new String[]{"SuperiorSkyblock2"};
     }
 }

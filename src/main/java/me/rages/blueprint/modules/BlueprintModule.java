@@ -13,6 +13,7 @@ import me.rages.blueprint.data.Message;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
+import me.rages.blueprint.service.impl.BuildCheckService;
 import me.rages.blueprint.ui.ConfirmUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -115,7 +116,9 @@ public class BlueprintModule implements TerminableModule {
                         Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
                         Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
 
-                        if (plugin.getServiceManager().getBuildCheckService().canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
+                        BuildCheckService buildCheckService = plugin.getServiceManager().getBuildCheckService();
+
+                        if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
                             if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                                 blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
                                 Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);

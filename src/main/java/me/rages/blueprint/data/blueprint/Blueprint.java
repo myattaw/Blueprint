@@ -34,6 +34,7 @@ public class Blueprint {
     }
 
     public void sendOutline(Player player, Block block, BlueprintDirection direction) {
+        clearOutlines(player);
         Points<Vector, Vector> data = points.get(direction);
         Set<BlockPosition> positions = new HashSet<>();
         Util.getHollowCube(

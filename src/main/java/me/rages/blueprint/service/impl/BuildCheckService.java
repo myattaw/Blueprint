@@ -16,7 +16,7 @@ public class BuildCheckService implements PluginService {
 
     @Override
     public BuildCheckService setup(BlueprintPlugin plugin) {
-        if (plugin.getServer().getPluginManager().isPluginEnabled("ASkyBlock")) {
+        if (plugin.getServer().getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
             this.skyblockService = new SkyblockService();
         }
         return this;
@@ -32,6 +32,6 @@ public class BuildCheckService implements PluginService {
 
     @Override
     public String[] pluginNames() {
-        return new String[]{"ASkyBlock"};
+        return new String[]{"ASkyBlock", "SuperiorSkyblock2"};
     }
 }
