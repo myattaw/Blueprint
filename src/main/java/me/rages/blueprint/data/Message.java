@@ -15,6 +15,7 @@ public enum Message {
     BLUEPRINT_TASK_FINISHED("blueprint-task-finished", "&7Your blueprint task has successfully completed."),
 
     // Commands
+    BLUEPRINT_NO_PERMISSION("blueprint-no-permission", "&cYou do not have access to this command."),
     BLUEPRINT_ITEM_RECEIVED("blueprint-item.received", "&7You have received a &9{name} blueprint&7."),
     BLUEPRINT_ITEM_GIVEN("blueprint-item.given", "&7You have given &9{player} &7a &9{name} blueprint&7.");
 

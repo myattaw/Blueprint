@@ -36,7 +36,8 @@ public class BlueprintModule implements TerminableModule {
 
     private BlueprintPlugin plugin;
     private NamespacedKey blueprintKey;
-    @Getter private NamespacedKey directionKey;
+    @Getter
+    private NamespacedKey directionKey;
 
     public BlueprintModule(BlueprintPlugin plugin) {
         this.plugin = plugin;
@@ -69,7 +70,7 @@ public class BlueprintModule implements TerminableModule {
                         switch (arg.toLowerCase()) {
                             case "give":
                                 if (!cmd.sender().hasPermission("blueprint.give")) {
-                                    cmd.sender().sendMessage(ChatColor.RED + "You do not have access to this command.");
+                                    cmd.sender().sendMessage(Message.BLUEPRINT_NO_PERMISSION.getColorized());
                                     return;
                                 }
 
@@ -78,7 +79,7 @@ public class BlueprintModule implements TerminableModule {
                                     cmd.sender().sendMessage(ChatColor.RED + "Could not find the specified player.");
                                 } else {
                                     String name = cmd.rawArg(2).toLowerCase();
-                                    target.getInventory().addItem(getBlueprintItem(target, name, 0, 1));
+                                    target.getInventory().addItem(getBlueprintItem(name, 0, 1));
                                     target.sendMessage(Message.BLUEPRINT_ITEM_RECEIVED.getColorized().replace("{name}", name));
                                     cmd.sender().sendMessage(Message.BLUEPRINT_ITEM_GIVEN.getColorized()
                                             .replace("{name}", name)
@@ -88,7 +89,7 @@ public class BlueprintModule implements TerminableModule {
                                 break;
                             case "list":
                                 if (!cmd.sender().hasPermission("blueprint.list")) {
-                                    cmd.sender().sendMessage(ChatColor.RED + "You do not have access to this command.");
+                                    cmd.sender().sendMessage(Message.BLUEPRINT_NO_PERMISSION.getColorized());
                                     return;
                                 }
 
@@ -114,19 +115,20 @@ public class BlueprintModule implements TerminableModule {
 
                     Player player = event.getPlayer();
 
+                    Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
+                    if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
+                        if (itemStack != null && name != null) {
+                            new RotateUI(plugin, blueprint, player, itemStack).open();
+                            return;
+                        }
+                    }
 
                     if (event.getClickedBlock() != null) {
-                        Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
                         Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
-
                         BuildCheckService buildCheckService = plugin.getServiceManager().getBuildCheckService();
 
                         if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
-                            if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
-                                if (itemStack != null && name != null) {
-                                    new RotateUI(plugin, blueprint, player, itemStack).open();
-                                }
-                            } else if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+                            if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                                 if (player.isSneaking()) {
                                     blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
                                     Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
@@ -160,7 +162,7 @@ public class BlueprintModule implements TerminableModule {
         }, 1, TimeUnit.SECONDS, 1, TimeUnit.SECONDS).bindWith(consumer);
     }
 
-    public ItemStack getBlueprintItem(Player player, String name, int direction, int amount) {
+    public ItemStack getBlueprintItem(String name, int direction, int amount) {
         ItemStack itemStack = ItemStackBuilder.of(Material.valueOf(plugin.getConfig().getString("blueprint-item.type")))
                 .name(plugin.getConfig().getString("blueprint-item.name").replace("{name}", name))
                 .transformMeta(itemMeta -> {
