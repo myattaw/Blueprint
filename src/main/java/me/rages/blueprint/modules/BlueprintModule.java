@@ -130,7 +130,7 @@ public class BlueprintModule implements TerminableModule {
                         if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
                             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                                 if (player.isSneaking()) {
-                                    blueprint.sendOutline(player, event.getClickedBlock(), BlueprintDirection.fromRotation(direction));
+                                    blueprint.sendOutline(player, event.getClickedBlock().getRelative(event.getBlockFace()), BlueprintDirection.fromRotation(direction));
                                     Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
                                 } else {
                                     if (itemStack != null && name != null) {

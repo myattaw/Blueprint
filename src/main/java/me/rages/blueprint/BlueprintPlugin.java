@@ -10,6 +10,8 @@ import me.rages.blueprint.modules.BlueprintModule;
 import me.rages.blueprint.service.ServiceManager;
 import me.rages.blueprint.service.impl.BuildCheckService;
 import me.rages.blueprint.service.impl.WorldEditService;
+import org.bukkit.Material;
+import org.bukkit.Tag;
 
 import java.io.File;
 import java.util.*;
@@ -25,18 +27,30 @@ import java.util.logging.Level;
 )
 public final class BlueprintPlugin extends ExtendedJavaPlugin {
 
-    @Getter private Map<String, Blueprint> blueprintDataMap = new HashMap<>();
-    @Getter private List<BlueprintGenerator> blueprintGenerators = new ArrayList<>();
+    @Getter
+    private Map<String, Blueprint> blueprintDataMap = new HashMap<>();
+    @Getter
+    private List<BlueprintGenerator> blueprintGenerators = new ArrayList<>();
 
-    @Getter private File schematicsFolder;
+    @Getter
+    private File schematicsFolder;
 
-    @Getter private ServiceManager serviceManager;
-    @Getter private LanguageFile languageFile;
-    @Getter private BlueprintModule blueprintModule;
+    @Getter
+    private ServiceManager serviceManager;
+    @Getter
+    private LanguageFile languageFile;
+    @Getter
+    private BlueprintModule blueprintModule;
 
+    @Getter
+    private static BlueprintPlugin instance;
+
+    @Getter
+    private Set<Material> ignoredTypes = new HashSet<>();
 
     @Override
     protected void enable() {
+        instance = this;
         this.saveDefaultConfig();
         this.serviceManager = ServiceManager.createServiceManager(this)
                 .registerService("build", new BuildCheckService())
@@ -59,7 +73,9 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
         }
 
         loadSchematics();
-
+        // load ignored types
+        ignoredTypes.addAll(Tag.TRAPDOORS.getValues());
+        ignoredTypes.addAll(Tag.DOORS.getValues());
     }
 
     public void loadSchematics() {

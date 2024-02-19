@@ -5,7 +5,10 @@ import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.blueprint.BlueprintBlock;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
+import me.rages.blueprint.test.PacketSender;
+import org.bukkit.Effect;
 import org.bukkit.Location;
+import org.bukkit.Particle;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
@@ -91,6 +94,7 @@ public class BlueprintGenerator {
                 Location loc = location.clone().add(blocks.get(blockIndex).getPosition());
                 if (loc.getBlock().isLiquid() || loc.getBlock().getType().isAir()) {
                     loc.getBlock().setBlockData((BlockData) blocks.get(blockIndex).getBlockData(), false);
+                    loc.getBlock().getLocation().getWorld().playEffect(loc.getBlock().getLocation(), Effect.STEP_SOUND, loc.getBlock().getType());
                 }
                 blockIndex++;
             }
@@ -98,6 +102,8 @@ public class BlueprintGenerator {
             Location loc = location.clone().add(pos);
             if (loc.getBlock().isLiquid() || loc.getBlock().getType().isAir()) {
                 loc.getBlock().setBlockData((BlockData) blocks.get(blockIndex).getBlockData(), false);
+                // Play block effects. Change to what you want.
+                loc.getBlock().getLocation().getWorld().playEffect(loc.getBlock().getLocation(), Effect.STEP_SOUND, loc.getBlock().getType());
             }
             blockIndex++;
         }
