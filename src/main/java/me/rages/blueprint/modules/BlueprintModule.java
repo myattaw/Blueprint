@@ -22,6 +22,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -125,21 +126,19 @@ public class BlueprintModule implements TerminableModule {
                         }
                     }
 
+                    Block block = event.getClickedBlock().getRelative(event.getBlockFace());
                     if (event.getClickedBlock() != null) {
-                        Location loc = event.getClickedBlock().getRelative(event.getBlockFace()).getLocation();
+                        Location loc = block.getLocation();
                         BuildCheckService buildCheckService = plugin.getServiceManager().getBuildCheckService();
-
                         if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
                             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
                                 if (player.isSneaking()) {
-                                    blueprint.sendOutline(player, event.getClickedBlock().getRelative(event.getBlockFace()), BlueprintDirection.fromRotation(direction));
-                                    Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
+                                    blueprint.sendOutline(player, block, BlueprintDirection.fromRotation(direction));
+                                    Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS)
+                                            .bindWith(consumer);
                                 } else {
-                                    if (itemStack != null && name != null && blueprint != null) {
-                                        Points<Vector, Vector> points = blueprint.getPoints().get(BlueprintDirection.fromRotation(direction));
-                                        if (Objects.requireNonNull(buildCheckService).canBuild(player, points, loc)) {
-                                            new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
-                                        }
+                                    if (itemStack != null && name != null) {
+                                        new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
                                     }
                                 }
                             }

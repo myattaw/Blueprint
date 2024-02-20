@@ -75,8 +75,6 @@ public class ConfirmUI extends Gui {
             setItem(4, ItemStackBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").build(null));
             setItem(13, ItemStackBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").build(null));
             setItem(22, ItemStackBuilder.of(Material.GRAY_STAINED_GLASS_PANE).name(" ").build(null));
-
-
         }
     }
 }

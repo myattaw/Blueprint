@@ -41,6 +41,6 @@ public class BuildCheckService implements PluginService {
 
     @Override
     public String[] pluginNames() {
-        return new String[]{"ASkyBlock", "SuperiorSkyblock2"};
+        return new String[]{"ASkyBlock", "SuperiorSkyblock2", "Factions"};
     }
 }
