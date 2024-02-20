@@ -13,12 +13,12 @@ confirm-gui:
   title: "Click to Confirm"
   items:
     confirm:
-      type: LIME_STAINED_GLASS_PANE
+      type: LIME_CONCRETE
       name: "&a&lCONFIRM"
       lore:
         - "&7Click to confirm"
     cancel:
-      type: RED_STAINED_GLASS_PANE
+      type: RED_CONCRETE
       name: "&c&lCANCEL"
       lore:
         - "&7Click to cancel"

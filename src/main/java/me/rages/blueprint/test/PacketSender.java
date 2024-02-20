@@ -53,7 +53,6 @@ public class PacketSender {
 
     private static void sendPayload(final Player receiver, String channel, ByteBuf bytes) {
         ClientboundCustomPayloadPacket customPayloadPacket = new ClientboundCustomPayloadPacket(new ResourceLocation(channel), new FriendlyByteBuf(bytes));
-
         sendPacket((CraftPlayer) receiver, customPayloadPacket);
     }
 

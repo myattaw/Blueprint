@@ -11,6 +11,7 @@ import me.lucko.helper.text3.Text;
 import me.lucko.helper.utils.Players;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Message;
+import me.rages.blueprint.data.Points;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
@@ -26,6 +27,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -133,9 +135,9 @@ public class BlueprintModule implements TerminableModule {
                                     blueprint.sendOutline(player, event.getClickedBlock().getRelative(event.getBlockFace()), BlueprintDirection.fromRotation(direction));
                                     Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS).bindWith(consumer);
                                 } else {
-                                    if (itemStack != null && name != null) {
-                                        //TODO: add build check here
-                                        if (blueprint != null) {
+                                    if (itemStack != null && name != null && blueprint != null) {
+                                        Points<Vector, Vector> points = blueprint.getPoints().get(BlueprintDirection.fromRotation(direction));
+                                        if (Objects.requireNonNull(buildCheckService).canBuild(player, points, loc)) {
                                             new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
                                         }
                                     }

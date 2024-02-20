@@ -54,7 +54,7 @@ public class Blueprint {
                         player,
                         loc,
                         PacketSender.getColor(blockData.getMaterial()),
-                        5000
+                        3000
                 );
             }
         });
