@@ -44,6 +44,7 @@ public class Blueprint {
 
 
         List<BlueprintBlock> bp = blockPositions.get(direction);
+        PacketSender.clearHighlights(player);
         bp.forEach(blueprintBlock -> {
             Vector pos = blueprintBlock.getPosition();
             Location loc = block.getLocation().clone().add(pos);
