@@ -46,15 +46,18 @@ public class ConfirmUI extends Gui {
                                     .lore(plugin.getConfig().getStringList("confirm-gui.items.confirm.lore"))
                                     .build(() -> {
                                         if (plugin.getBlueprintModule().removeItem(getPlayer(), itemStack, 1)) {
-                                            plugin.getBlueprintGenerators().add(
-                                                    BlueprintGenerator.create(blueprint.getName().toLowerCase(), direction, location)
-                                                            .addPlayer(getPlayer())
-                                                            .setFastMode(true)
-                                            );
+
+                                            BlueprintGenerator generator = BlueprintGenerator.create(blueprint.getName().toLowerCase(), direction, location)
+                                                    .addPlayer(getPlayer());
+//                                                    .setFastMode(true);
+                                            plugin.getBlueprintGenerators().add(generator);
                                             Points<Vector, Vector> points = blueprint.getPoints().get(direction);
 
                                             Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
-                                                    .map(message -> message.replace("{time}", points.getMax().getY() - points.getMin().getY() + " Seconds"))
+                                                    .map(message -> message.replace("{time}",
+                                                            (generator.isFastMode() ?
+                                                                    (points.getMax().getY() - points.getMin().getY()) :
+                                                                    (blueprint.getBlockPositions().get(direction).size())) + " Seconds"))
                                                     .forEach(getPlayer()::sendMessage);
 
                                             blueprint.clearOutlines(getPlayer());

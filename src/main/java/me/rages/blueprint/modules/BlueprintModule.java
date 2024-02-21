@@ -112,34 +112,36 @@ public class BlueprintModule implements TerminableModule {
                 .handler(event -> {
 
                     ItemStack itemStack = event.getItem();
-
                     String name = itemStack.getItemMeta().getPersistentDataContainer().getOrDefault(blueprintKey, PersistentDataType.STRING, null);
-                    int direction = itemStack.getItemMeta().getPersistentDataContainer().getOrDefault(directionKey, PersistentDataType.INTEGER, 0);
-
                     Player player = event.getPlayer();
 
                     Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
-                    if (event.getAction() == Action.LEFT_CLICK_BLOCK || event.getAction() == Action.LEFT_CLICK_AIR) {
+
+                    // Using player direction (make this configurable so we can use rotate menu)
+                    BlueprintDirection bpDirection = BlueprintDirection.fromRotation(getPlayerDirection(player));
+
+                    if (blueprint == null) {
+                        return;
+                    }
+
+                    if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (itemStack != null && name != null) {
-                            new RotateUI(plugin, blueprint, player, itemStack).open();
+                            Block block = event.getClickedBlock().getRelative(event.getBlockFace());
+                            blueprint.sendOutline(player, block, bpDirection);
+                            event.setCancelled(true);
                             return;
                         }
                     }
 
-                    Block block = event.getClickedBlock().getRelative(event.getBlockFace());
                     if (event.getClickedBlock() != null) {
+                        Block block = event.getClickedBlock().getRelative(event.getBlockFace());
                         Location loc = block.getLocation();
                         BuildCheckService buildCheckService = plugin.getServiceManager().getBuildCheckService();
-                        if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(BlueprintDirection.fromRotation(direction)), loc)) {
+                        // check if bp config is using player direction
+                        if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(bpDirection), loc)) {
                             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
-                                if (player.isSneaking()) {
-                                    blueprint.sendOutline(player, block, BlueprintDirection.fromRotation(direction));
-                                    Schedulers.sync().runLater(() -> blueprint.clearOutlines(player), 10, TimeUnit.SECONDS)
-                                            .bindWith(consumer);
-                                } else {
-                                    if (itemStack != null && name != null) {
-                                        new ConfirmUI(plugin, itemStack, blueprint, BlueprintDirection.fromRotation(direction), player, loc).open();
-                                    }
+                                if (itemStack != null && name != null) {
+                                    new ConfirmUI(plugin, itemStack, blueprint, bpDirection, player, loc).open();
                                 }
                             }
                         } else {
@@ -229,5 +231,24 @@ public class BlueprintModule implements TerminableModule {
         return customName1.equals(customName2);
     }
 
+    public int getPlayerDirection(Player player) {
+        double degrees = (player.getLocation().getYaw() - 180) % 360;
+        if (degrees < 0) {
+            degrees += 360;
+        }
+
+        if (0 <= degrees && degrees < 45) {
+            return 0;
+        } else if (45 <= degrees && degrees < 135) {
+            return 90;
+        } else if (135 <= degrees && degrees < 225) {
+            return 180;
+        } else if (225 <= degrees && degrees < 315) {
+            return 270;
+        } else if (315 <= degrees && degrees < 360.0) {
+            return 0;
+        }
+        return 0;
+    }
 
 }

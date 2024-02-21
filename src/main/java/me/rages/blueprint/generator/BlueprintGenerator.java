@@ -27,6 +27,7 @@ public class BlueprintGenerator {
     private BlueprintDirection direction; // the direction the player picked
     private Location location;
     @Getter private Player player; // who placed the SchemBucket
+    @Getter
     private boolean fastMode = false; // builds the schematic layer by layer
 
 
@@ -109,5 +110,6 @@ public class BlueprintGenerator {
         }
         return blockIndex >= blocks.size(); // we reached the end of the build
     }
+
 
 }
