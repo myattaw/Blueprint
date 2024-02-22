@@ -23,6 +23,7 @@ public abstract class ConfigFile {
         this.configFile = new File(plugin.getDataFolder(), String.format("%s.yml", fileName.toLowerCase()));
         try {
             this.configFile.createNewFile();
+            plugin.getLogger().log(Level.INFO, "Creating new %s configuration file!", fileName);
         }
         catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to create configuration file!");

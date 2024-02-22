@@ -2,6 +2,7 @@ package me.rages.blueprint.data.blueprint;
 
 import com.google.common.io.Files;
 import lombok.Getter;
+import lombok.Setter;
 import me.lucko.helper.serialize.BlockPosition;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
@@ -26,6 +27,12 @@ public class Blueprint {
 
     @Getter private Map<BlueprintDirection, List<BlueprintBlock>> blockPositions;
     @Getter private Map<BlueprintDirection, Points<Vector, Vector>> points;
+
+    @Getter @Setter private String displayName;
+    @Getter @Setter private List<String> displayLore;
+    @Getter @Setter private boolean fastPlace;
+    @Getter @Setter private boolean snapToChunk;
+    @Getter @Setter private boolean usePlayerRotation;
 
     private Map<UUID, Set<BlockPosition>> outlineCache = new HashMap<>();
 

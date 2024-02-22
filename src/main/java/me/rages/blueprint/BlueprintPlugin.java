@@ -3,6 +3,7 @@ package me.rages.blueprint;
 import lombok.Getter;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import me.lucko.helper.plugin.ap.Plugin;
+import me.rages.blueprint.config.BlueprintFile;
 import me.rages.blueprint.config.LanguageFile;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.generator.BlueprintGenerator;
@@ -40,6 +41,8 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
     @Getter
     private LanguageFile languageFile;
     @Getter
+    private BlueprintFile blueprintFile;
+    @Getter
     private BlueprintModule blueprintModule;
 
     @Getter
@@ -55,13 +58,15 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
         this.serviceManager = ServiceManager.createServiceManager(this)
                 .registerService("build", new BuildCheckService())
                 .registerService("worldedit", new WorldEditService());
+        this.schematicsFolder = new File(getDataFolder(), "schematics");
+        this.loadSchematics();
 
         this.blueprintModule = new BlueprintModule(this);
 
         this.bindModule(blueprintModule);
         this.languageFile = new LanguageFile(this, "lang").init();
+        this.blueprintFile = new BlueprintFile(this, "blueprints").init();
 
-        schematicsFolder = new File(getDataFolder(), "schematics");
         if (!schematicsFolder.exists()) {
             if (!schematicsFolder.mkdir()) {
                 this.getLogger().log(Level.SEVERE, "Failed to create schematics directory!");
@@ -72,7 +77,6 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
             }
         }
 
-        loadSchematics();
         // load ignored types
         ignoredTypes.addAll(Tag.TRAPDOORS.getValues());
         ignoredTypes.addAll(Tag.DOORS.getValues());

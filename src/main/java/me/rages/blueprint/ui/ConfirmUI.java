@@ -8,6 +8,7 @@ import me.rages.blueprint.data.Points;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
+import me.rages.blueprint.test.PacketSender;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -40,34 +41,46 @@ public class ConfirmUI extends Gui {
     @Override
     public void redraw() {
         if (isFirstDraw()) {
-            Arrays.stream(CONFIRM_SLOTS).forEachOrdered(i -> setItem(i,
-                            ItemStackBuilder.of(Material.valueOf(plugin.getConfig().getString("confirm-gui.items.confirm.type")))
-                                    .name(plugin.getConfig().getString("confirm-gui.items.confirm.name"))
-                                    .lore(plugin.getConfig().getStringList("confirm-gui.items.confirm.lore"))
-                                    .build(() -> {
-                                        if (plugin.getBlueprintModule().removeItem(getPlayer(), itemStack, 1)) {
+            for (int CONFIRM_SLOT : CONFIRM_SLOTS) {
+                setItem(CONFIRM_SLOT,
+                        ItemStackBuilder.of(Material.valueOf(plugin.getConfig().getString("confirm-gui.items.confirm.type")))
+                                .name(plugin.getConfig().getString("confirm-gui.items.confirm.name"))
+                                .lore(plugin.getConfig().getStringList("confirm-gui.items.confirm.lore"))
+                                .build(() -> {
+                                    if (plugin.getBlueprintModule().removeItem(getPlayer(), itemStack, 1)) {
 
-                                            BlueprintGenerator generator = BlueprintGenerator.create(blueprint.getName().toLowerCase(), direction, location)
-                                                    .addPlayer(getPlayer());
-//                                                    .setFastMode(true);
-                                            plugin.getBlueprintGenerators().add(generator);
-                                            Points<Vector, Vector> points = blueprint.getPoints().get(direction);
+                                        BlueprintGenerator generator = BlueprintGenerator.create(blueprint.getName().toLowerCase(), direction, location)
+                                                .addPlayer(getPlayer())
+                                                .setFastMode(blueprint.isFastPlace())
+                                                .setSnapToChunk(blueprint.isSnapToChunk())
+                                                .setUsePlayerRotation(blueprint.isUsePlayerRotation());
 
-                                            Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
-                                                    .map(message -> message.replace("{time}",
-                                                            (generator.isFastMode() ?
-                                                                    (points.getMax().getY() - points.getMin().getY()) :
-                                                                    (blueprint.getBlockPositions().get(direction).size())) + " Seconds"))
-                                                    .forEach(getPlayer()::sendMessage);
 
-                                            blueprint.clearOutlines(getPlayer());
+                                        plugin.getBlueprintGenerators().add(generator);
+                                        Points<Vector, Vector> points = blueprint.getPoints().get(direction);
+
+                                        System.out.println((points.getMax().getY() - points.getMin().getY()) / 4);
+                                        String time;
+                                        if (generator.isFastMode()) {
+                                            time = String.format("%d Seconds", (int) Math.ceil((points.getMax().getY() - points.getMin().getY()) / 4f));
                                         } else {
-                                            getPlayer().sendMessage(ChatColor.RED + "Failed to find blueprint item in your inventory.");
+                                            time = String.format("%d Seconds", (int) Math.ceil(blueprint.getBlockPositions().get(direction).size() / 4f));
                                         }
-                                        getPlayer().closeInventory();
-                                    })
-                    )
-            );
+
+                                        String finalTime = time;
+                                        Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
+                                                .map(message -> message.replace("{time}", finalTime))
+                                                .forEach(getPlayer()::sendMessage);
+
+                                        blueprint.clearOutlines(getPlayer());
+                                        PacketSender.clearHighlights(getPlayer());
+                                    } else {
+                                        getPlayer().sendMessage(ChatColor.RED + "Failed to find blueprint item in your inventory.");
+                                    }
+                                    getPlayer().closeInventory();
+                                })
+                );
+            }
 
             Arrays.stream(CANCEL_SLOTS).forEachOrdered(i -> setItem(i,
                     ItemStackBuilder.of(Material.valueOf(plugin.getConfig().getString("confirm-gui.items.cancel.type")))

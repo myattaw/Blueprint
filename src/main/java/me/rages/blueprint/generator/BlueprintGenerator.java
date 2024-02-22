@@ -27,9 +27,9 @@ public class BlueprintGenerator {
     private BlueprintDirection direction; // the direction the player picked
     private Location location;
     @Getter private Player player; // who placed the SchemBucket
-    @Getter
-    private boolean fastMode = false; // builds the schematic layer by layer
-
+    @Getter private boolean fastMode = false; // builds the schematic layer by layer
+    @Getter private boolean snapToChunk = false; // builds the schematic layer by layer
+    @Getter private boolean usePlayerRotation = false; // builds the schematic layer by layer
 
     /**
      * Default constructor
@@ -76,6 +76,28 @@ public class BlueprintGenerator {
      */
     public BlueprintGenerator setFastMode(boolean flag) {
         this.fastMode = flag;
+        return this;
+    }
+
+    /**
+     * Change schematic to snap to chunk mode
+     *
+     * @param flag
+     * @return generator
+     */
+    public BlueprintGenerator setSnapToChunk(boolean flag) {
+        this.snapToChunk = flag;
+        return this;
+    }
+
+    /**
+     * Change schematic to use player rotations
+     *
+     * @param flag
+     * @return generator
+     */
+    public BlueprintGenerator setUsePlayerRotation(boolean flag) {
+        this.usePlayerRotation = flag;
         return this;
     }
 

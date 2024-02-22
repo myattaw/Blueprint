@@ -162,14 +162,16 @@ public class BlueprintModule implements TerminableModule {
                     }
                 }
             }
-        }, 1, TimeUnit.SECONDS, 1, TimeUnit.SECONDS).bindWith(consumer);
+        }, 5L, 5L).bindWith(consumer);
     }
 
     public ItemStack getBlueprintItem(String name, int direction, int amount) {
+
+        Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
         ItemStack itemStack = ItemStackBuilder.of(Material.valueOf(plugin.getConfig().getString("blueprint-item.type")))
-                .name(plugin.getConfig().getString("blueprint-item.name").replace("{name}", name))
+                .name(blueprint.getDisplayName().replace("{name}", name))
                 .transformMeta(itemMeta -> {
-                    List<String> itemLore = plugin.getConfig().getStringList("blueprint-item.lore")
+                    List<String> itemLore = blueprint.getDisplayLore()
                             .stream()
                             .map(lore -> Text.colorize(lore.replace("{direction}", Objects.requireNonNull(BlueprintDirection.fromRotation(direction)).getName())))
                             .collect(Collectors.toList());
