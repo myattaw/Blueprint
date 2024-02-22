@@ -58,8 +58,6 @@ public class ConfirmUI extends Gui {
 
                                         plugin.getBlueprintGenerators().add(generator);
                                         Points<Vector, Vector> points = blueprint.getPoints().get(direction);
-
-                                        System.out.println((points.getMax().getY() - points.getMin().getY()) / 4);
                                         String time;
                                         if (generator.isFastMode()) {
                                             time = String.format("%d Seconds", (int) Math.ceil((points.getMax().getY() - points.getMin().getY()) / 4f));

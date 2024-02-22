@@ -11,13 +11,11 @@ import me.lucko.helper.text3.Text;
 import me.lucko.helper.utils.Players;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Message;
-import me.rages.blueprint.data.Points;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
 import me.rages.blueprint.service.impl.BuildCheckService;
 import me.rages.blueprint.ui.ConfirmUI;
-import me.rages.blueprint.ui.RotateUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -28,11 +26,9 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.util.Vector;
 
 import javax.annotation.Nonnull;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class BlueprintModule implements TerminableModule {
@@ -118,7 +114,9 @@ public class BlueprintModule implements TerminableModule {
                     Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
 
                     // Using player direction (make this configurable so we can use rotate menu)
-                    BlueprintDirection bpDirection = BlueprintDirection.fromRotation(getPlayerDirection(player));
+                    BlueprintDirection bpDirection = BlueprintDirection.fromRotation(
+                            blueprint.isSnapToChunk() ? 180 : getPlayerDirection(player)
+                    );
 
                     if (blueprint == null) {
                         return;
@@ -127,6 +125,11 @@ public class BlueprintModule implements TerminableModule {
                     if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (itemStack != null && name != null) {
                             Block block = event.getClickedBlock().getRelative(event.getBlockFace());
+
+                            if (blueprint.isSnapToChunk()) {
+                                block = event.getClickedBlock().getChunk().getBlock(15, block.getY(), 15);
+                            }
+
                             blueprint.sendOutline(player, block, bpDirection);
                             event.setCancelled(true);
                             return;
@@ -135,6 +138,11 @@ public class BlueprintModule implements TerminableModule {
 
                     if (event.getClickedBlock() != null) {
                         Block block = event.getClickedBlock().getRelative(event.getBlockFace());
+
+                        if (blueprint.isSnapToChunk()) {
+                            block = event.getClickedBlock().getChunk().getBlock(15, block.getY(), 15);
+                        }
+
                         Location loc = block.getLocation();
                         BuildCheckService buildCheckService = plugin.getServiceManager().getBuildCheckService();
                         // check if bp config is using player direction
