@@ -113,14 +113,15 @@ public class BlueprintModule implements TerminableModule {
 
                     Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
 
+                    if (blueprint == null) {
+                        return;
+                    }
+
                     // Using player direction (make this configurable so we can use rotate menu)
                     BlueprintDirection bpDirection = BlueprintDirection.fromRotation(
                             blueprint.isSnapToChunk() ? 180 : getPlayerDirection(player)
                     );
 
-                    if (blueprint == null) {
-                        return;
-                    }
 
                     if (event.getAction() == Action.LEFT_CLICK_BLOCK) {
                         if (itemStack != null && name != null) {
