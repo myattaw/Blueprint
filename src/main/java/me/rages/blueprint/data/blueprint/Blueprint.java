@@ -28,6 +28,7 @@ public class Blueprint {
     @Getter private Map<BlueprintDirection, List<BlueprintBlock>> blockPositions;
     @Getter private Map<BlueprintDirection, Points<Vector, Vector>> points;
 
+    @Getter @Setter private Material material;
     @Getter @Setter private String displayName;
     @Getter @Setter private List<String> displayLore;
     @Getter @Setter private boolean fastPlace;

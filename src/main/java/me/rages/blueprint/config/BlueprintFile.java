@@ -3,6 +3,7 @@ package me.rages.blueprint.config;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Arrays;
@@ -28,6 +29,7 @@ public class BlueprintFile extends ConfigFile {
             if (blueprints == null || !blueprints.contains(key)) {
                 // If the section does not exist, create it and set default values
                 blueprints = getConfig().createSection("blueprints." + key);
+                blueprints.set("material", "PAPER");
                 blueprints.set("display-name", key + " Blueprint");
                 blueprints.set("display-lore", Arrays.asList("&7Blueprint lore"));
                 blueprints.set("use-fast-place", false);
@@ -39,6 +41,7 @@ public class BlueprintFile extends ConfigFile {
                     key + ".display-name",
                     ChatColor.DARK_PURPLE + key + " Blueprint")
             );
+            value.setMaterial(Material.valueOf(blueprints.getString(key + ".material")));
             value.setDisplayLore(blueprints.getStringList(key + ".display-lore"));
             value.setFastPlace(blueprints.getBoolean(key + ".use-fast-place", false));
             value.setUsePlayerRotation(blueprints.getBoolean(key + ".use-player-rotations", false));
