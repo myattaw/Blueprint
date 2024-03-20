@@ -21,7 +21,15 @@ import java.util.logging.Level;
 @Plugin(
         name = "Blueprint",
         hardDepends = {"helper"},
-        softDepends = {"FastAsyncWorldEdit", "WorldEdit", "Factions", "ASkyBlock", "SuperiorSkyblock2", "ProtocolLib"},
+        softDepends = {
+                "FastAsyncWorldEdit",
+                "WorldEdit",
+                "Factions",
+                "ASkyBlock",
+                "SuperiorSkyblock2",
+                "ProtocolLib",
+                "floodgate"
+        },
         authors = {"Rages"},
         apiVersion = "1.18",
         description = "Placeable schematic items."

@@ -3,6 +3,7 @@ package me.rages.blueprint.data.blueprint;
 import com.google.common.io.Files;
 import lombok.Getter;
 import lombok.Setter;
+import me.lucko.helper.Schedulers;
 import me.lucko.helper.serialize.BlockPosition;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
@@ -15,10 +16,12 @@ import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
+import org.geysermc.floodgate.api.FloodgateApi;
 
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 
 public class Blueprint {
@@ -49,39 +52,42 @@ public class Blueprint {
     public void sendOutline(Player player, Block block, BlueprintDirection direction) {
         clearOutlines(player);
         Set<BlockPosition> positions = new HashSet<>();
+        if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+            // do below for bedrock players
+            Points<Vector, Vector> data = points.get(direction);
+            Util.getHollowCube(
+                            data.getMin().getBlockX(), data.getMin().getBlockY(), data.getMin().getBlockZ(),
+                            data.getMax().getBlockX(), data.getMax().getBlockY(), data.getMax().getBlockZ())
+                    .forEach(vec -> {
+                        Block outlineBlock = block.getLocation().add(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getBlock();
+                        if (outlineBlock.isLiquid() || outlineBlock.getType() == Material.AIR) {
+                            positions.add(BlockPosition.of(outlineBlock));
+                            player.sendBlockChange(
+                                    outlineBlock.getLocation(),
+                                    Material.LIME_STAINED_GLASS.createBlockData()
+                            );
+                        }
+                    });
 
-
-        List<BlueprintBlock> bp = blockPositions.get(direction);
-        PacketSender.clearHighlights(player);
-        bp.forEach(blueprintBlock -> {
-            Vector pos = blueprintBlock.getPosition();
-            Location loc = block.getLocation().clone().add(pos);
-            BlockData blockData = ((BlockData) blueprintBlock.getBlockData());
-            if (blockData.getMaterial().isSolid() &&
-                    !BlueprintPlugin.getInstance().getIgnoredTypes().contains(blockData.getMaterial())) {
-                PacketSender.sendBlockHighlight(
-                        player,
-                        loc,
-                        PacketSender.getColor(blockData.getMaterial()),
-                        3000
-                );
-            }
-        });
-
-        // do below for bedrock players
-//        Util.getHollowCube(
-//                        data.getMin().getBlockX(), data.getMin().getBlockY(), data.getMin().getBlockZ(),
-//                        data.getMax().getBlockX(), data.getMax().getBlockY(), data.getMax().getBlockZ())
-//                .forEach(vec -> {
-//                    Block outlineBlock = block.getLocation().add(vec.getBlockX(), vec.getBlockY(), vec.getBlockZ()).getBlock();
-//                    if (outlineBlock.isLiquid() || outlineBlock.getType() == Material.AIR) {
-//                        positions.add(BlockPosition.of(outlineBlock));
-//                        player.sendBlockChange(
-//                                outlineBlock.getLocation(),
-//                                Material.LIME_STAINED_GLASS.createBlockData()
-//                        );
-//                    }
-//                });
+            Schedulers.sync().runLater(() -> clearOutlines(player), 15, TimeUnit.SECONDS);
+        } else {
+            List<BlueprintBlock> bp = blockPositions.get(direction);
+            PacketSender.clearHighlights(player);
+            bp.forEach(blueprintBlock -> {
+                Vector pos = blueprintBlock.getPosition();
+                Location loc = block.getLocation().clone().add(pos);
+                BlockData blockData = ((BlockData) blueprintBlock.getBlockData());
+                if (blockData.getMaterial().isSolid() &&
+                        !BlueprintPlugin.getInstance().getIgnoredTypes().contains(blockData.getMaterial())) {
+                    PacketSender.sendBlockHighlight(
+                            player,
+                            loc,
+                            PacketSender.getColor(blockData.getMaterial()),
+                            3000
+                    );
+                }
+            });
+        }
         outlineCache.put(player.getUniqueId(), positions);
     }
 

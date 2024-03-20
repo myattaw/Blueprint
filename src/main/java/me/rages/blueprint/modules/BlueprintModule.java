@@ -105,7 +105,7 @@ public class BlueprintModule implements TerminableModule {
                 .registerAndBind(consumer, "blueprint");
 
         Events.subscribe(BlockPlaceEvent.class)
-
+                .filter(event -> event.getItemInHand() != null && event.getItemInHand().hasItemMeta())
                 .handler(event -> {
                     ItemStack itemStack = event.getItemInHand();
                     String name = itemStack.getItemMeta().getPersistentDataContainer().getOrDefault(blueprintKey, PersistentDataType.STRING, null);
