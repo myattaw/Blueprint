@@ -111,9 +111,11 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.github.SaberLLC</groupId>
-            <artifactId>Saber-Factions</artifactId>
-            <version>1.6.x-SNAPSHOT</version>
+            <groupId>com.massivecraft.factions</groupId>
+            <artifactId>FactionsUUID</artifactId>
+            <scope>system</scope>
+            <version>2.8.2-SNAPSHOT-596</version>
+            <systemPath>${project.basedir}/libs/Factions-2024-03-22--04.jar</systemPath>
         </dependency>
         <dependency>
             <groupId>com.bgsoftware</groupId>

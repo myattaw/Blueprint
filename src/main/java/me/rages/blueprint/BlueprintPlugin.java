@@ -28,7 +28,7 @@ import java.util.logging.Level;
                 "ASkyBlock",
                 "SuperiorSkyblock2",
                 "ProtocolLib",
-                "floodgate"
+//                "floodgate"
         },
         authors = {"Rages"},
         apiVersion = "1.18",
@@ -64,8 +64,8 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
         instance = this;
         this.saveDefaultConfig();
         this.serviceManager = ServiceManager.createServiceManager(this)
-                .registerService("build", new BuildCheckService())
-                .registerService("worldedit", new WorldEditService());
+                .registerService(new BuildCheckService())
+                .registerService(new WorldEditService());
         this.schematicsFolder = new File(getDataFolder(), "schematics");
         this.loadSchematics();
 
@@ -94,7 +94,8 @@ public final class BlueprintPlugin extends ExtendedJavaPlugin {
         this.getLogger().log(Level.INFO, "Importing schematics");
         File[] files = schematicsFolder.listFiles();
         if (files != null) {
-            Arrays.stream(files).forEach(file -> getServiceManager().getWorldEdit().readSchematic(file, getBlueprintDataMap()));
+            WorldEditService worldEditService = getServiceManager().getService(WorldEditService.class);
+            Arrays.stream(files).forEach(file -> worldEditService.readSchematic(file, getBlueprintDataMap()));
         }
     }
 

@@ -159,7 +159,7 @@ public class BlueprintModule implements TerminableModule {
                         }
 
                         Location loc = block.getLocation();
-                        BuildCheckService buildCheckService = plugin.getServiceManager().getBuildCheckService();
+                        BuildCheckService buildCheckService = plugin.getServiceManager().getService(BuildCheckService.class);
                         // check if bp config is using player direction
                         if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(bpDirection), loc)) {
                             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {

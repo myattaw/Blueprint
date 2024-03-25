@@ -15,7 +15,7 @@ import java.util.logging.Level;
 public class ServiceManager {
 
     private BlueprintPlugin plugin;
-    private Map<String, PluginService> pluginMap = new HashMap<>();
+    private Map<Class<?>, PluginService<?>> classMap = new HashMap<>();
 
     /**
      * Default constructor
@@ -39,25 +39,27 @@ public class ServiceManager {
     /**
      * Register plugin hook by name
      *
-     * @param pluginName    name of the hook
      * @param pluginService object of the plugin hook
      */
-    public ServiceManager registerService(String pluginName, PluginService pluginService) {
+    public ServiceManager registerService(PluginService pluginService) {
         for (String name : pluginService.pluginNames()) {
             if (plugin.getServer().getPluginManager().getPlugin(name) == null) continue;
             plugin.getLogger().log(Level.INFO, "Successfully hooked into " + name);
-            pluginMap.put(pluginName, (PluginService<?>) pluginService.setup(plugin));
+            classMap.put(pluginService.getClass(), (PluginService<?>) pluginService.setup(plugin));
         }
         return this;
     }
 
-    public WorldEditService getWorldEdit() {
-        return (WorldEditService) pluginMap.get("worldedit");
+    /**
+     * Returns the PluginService instance associated with the specified class.
+     *
+     * @param <T>  Type of PluginService
+     * @return PluginService instance
+     */
+    @SuppressWarnings("unchecked")
+    public <T extends PluginService<?>> T getService(Class<?> serviceClass) {
+        // Get the class of type T
+        return (T) classMap.get(serviceClass);
     }
-
-    public BuildCheckService getBuildCheckService() {
-        return (BuildCheckService) pluginMap.get("build");
-    }
-
 
 }
