@@ -3,6 +3,7 @@ package me.rages.blueprint.service.impl.factions;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.Faction;
+import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.listeners.FactionsBlockListener;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
@@ -34,6 +35,11 @@ public class FactionService implements PluginService {
     }
 
     public boolean canPlayerBuild(Player player, Location location) {
+        FLocation fLocation = new FLocation(location);
+        if (Board.getInstance().getFactionAt(fLocation).equals("-3")) {
+            return false;
+        }
+
         return FactionsBlockListener.playerCanBuildDestroyBlock(player, location, "build", true);
     }
 
