@@ -28,7 +28,7 @@ import java.util.logging.Level;
                 "ASkyBlock",
                 "SuperiorSkyblock2",
                 "ProtocolLib",
-//                "floodgate"
+                "floodgate"
         },
         authors = {"Rages"},
         apiVersion = "1.18",

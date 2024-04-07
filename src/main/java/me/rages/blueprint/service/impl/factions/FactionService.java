@@ -36,7 +36,7 @@ public class FactionService implements PluginService {
 
     public boolean canPlayerBuild(Player player, Location location) {
         FLocation fLocation = new FLocation(location);
-        if (Board.getInstance().getFactionAt(fLocation).equals("-3")) {
+        if (Board.getInstance().getFactionAt(fLocation).getId().equals("-3")) {
             return false;
         }
 
