@@ -12,11 +12,17 @@ import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.util.Vector;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class FactionService implements PluginService {
 
 
+    private final Set<String> blockedFactionIds = new HashSet<>();
+
     @Override
     public FactionService setup(BlueprintPlugin plugin) {
+        blockedFactionIds.addAll(plugin.getConfig().getStringList("blocked-faction-ids"));
         return this;
     }
 
@@ -36,10 +42,9 @@ public class FactionService implements PluginService {
 
     public boolean canPlayerBuild(Player player, Location location) {
         FLocation fLocation = new FLocation(location);
-        if (Board.getInstance().getFactionAt(fLocation).getId().equals("-3")) {
+        if (blockedFactionIds.contains(Board.getInstance().getFactionAt(fLocation).getId())) {
             return false;
         }
-
         return FactionsBlockListener.playerCanBuildDestroyBlock(player, location, "build", true);
     }
 

@@ -1,3 +1,8 @@
+blocked-faction-ids:
+  - "-3"
+  - "-2"
+  - "-1"
+
 settings:
 
 blueprint-item:
