@@ -14,7 +14,7 @@ import me.rages.blueprint.data.Message;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.data.blueprint.BlueprintDirection;
 import me.rages.blueprint.generator.BlueprintGenerator;
-import me.rages.blueprint.service.impl.BuildCheckService;
+import me.rages.blueprint.services.BuildCheckService;
 import me.rages.blueprint.ui.ConfirmUI;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;

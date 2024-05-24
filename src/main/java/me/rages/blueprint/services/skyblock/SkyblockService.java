@@ -1,28 +1,22 @@
-package me.rages.blueprint.service.impl.factions;
+package me.rages.blueprint.services.skyblock;
 
-import com.massivecraft.factions.Board;
-import com.massivecraft.factions.FLocation;
-import com.massivecraft.factions.Faction;
-import com.massivecraft.factions.Factions;
-import com.massivecraft.factions.listeners.FactionsBlockListener;
+import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
-import me.rages.blueprint.service.PluginService;
+import me.rages.reliableframework.pluginservice.PluginService;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-import java.util.HashSet;
-import java.util.Set;
 
-public class FactionService implements PluginService {
+public class SkyblockService implements PluginService {
 
-
-    private final Set<String> blockedFactionIds = new HashSet<>();
+//    private final ASkyBlockAPI api = ASkyBlockAPI.getInstance();
 
     @Override
-    public FactionService setup(BlueprintPlugin plugin) {
-        blockedFactionIds.addAll(plugin.getConfig().getStringList("blocked-faction-ids"));
+    public SkyblockService setup(JavaPlugin plugin) {
+
         return this;
     }
 
@@ -41,16 +35,17 @@ public class FactionService implements PluginService {
     }
 
     public boolean canPlayerBuild(Player player, Location location) {
-        FLocation fLocation = new FLocation(location);
-        if (blockedFactionIds.contains(Board.getInstance().getFactionAt(fLocation).getId())) {
-            return false;
+
+        if (SuperiorSkyblockAPI.getIslandAt(location) == null) {
+            return true;
         }
-        return FactionsBlockListener.playerCanBuildDestroyBlock(player, location, "build", true);
+
+        return SuperiorSkyblockAPI.getIslandAt(location).getCoopPlayers().contains(SuperiorSkyblockAPI.getPlayer(player.getUniqueId()));
     }
 
 
     @Override
     public String[] pluginNames() {
-        return new String[]{"Factions"};
+        return new String[]{"SuperiorSkyblock2"};
     }
 }

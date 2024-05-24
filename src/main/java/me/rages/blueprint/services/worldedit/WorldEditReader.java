@@ -1,4 +1,4 @@
-package me.rages.blueprint.service.impl.worldedit;
+package me.rages.blueprint.services.worldedit;
 
 import me.rages.blueprint.data.blueprint.Blueprint;
 

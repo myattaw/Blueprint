@@ -1,21 +1,27 @@
-package me.rages.blueprint.service.impl.skyblock;
+package me.rages.blueprint.services.factions;
 
-import com.bgsoftware.superiorskyblock.api.SuperiorSkyblockAPI;
+import com.massivecraft.factions.Board;
+import com.massivecraft.factions.FLocation;
+import com.massivecraft.factions.listeners.FactionsBlockListener;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
-import me.rages.blueprint.service.PluginService;
+import me.rages.reliableframework.pluginservice.PluginService;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
+import java.util.HashSet;
+import java.util.Set;
 
-public class SkyblockService implements PluginService {
+public class FactionService implements PluginService {
 
-//    private final ASkyBlockAPI api = ASkyBlockAPI.getInstance();
+
+    private final Set<String> blockedFactionIds = new HashSet<>();
 
     @Override
-    public SkyblockService setup(BlueprintPlugin plugin) {
-
+    public FactionService setup(JavaPlugin plugin) {
+        blockedFactionIds.addAll(plugin.getConfig().getStringList("blocked-faction-ids"));
         return this;
     }
 
@@ -34,17 +40,16 @@ public class SkyblockService implements PluginService {
     }
 
     public boolean canPlayerBuild(Player player, Location location) {
-
-        if (SuperiorSkyblockAPI.getIslandAt(location) == null) {
-            return true;
+        FLocation fLocation = new FLocation(location);
+        if (blockedFactionIds.contains(Board.getInstance().getFactionAt(fLocation).getId())) {
+            return false;
         }
-
-        return SuperiorSkyblockAPI.getIslandAt(location).getCoopPlayers().contains(SuperiorSkyblockAPI.getPlayer(player.getUniqueId()));
+        return FactionsBlockListener.playerCanBuildDestroyBlock(player, location, "build", true);
     }
 
 
     @Override
     public String[] pluginNames() {
-        return new String[]{"SuperiorSkyblock2"};
+        return new String[]{"Factions"};
     }
 }

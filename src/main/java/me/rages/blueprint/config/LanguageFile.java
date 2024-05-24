@@ -2,6 +2,7 @@ package me.rages.blueprint.config;
 
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Message;
+import me.rages.reliableframework.files.ConfigFile;
 
 import java.util.Arrays;
 import java.util.logging.Level;

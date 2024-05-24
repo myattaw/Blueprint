@@ -1,14 +1,13 @@
-package me.rages.blueprint.service.impl;
+package me.rages.blueprint.services;
 
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
-import me.rages.blueprint.data.blueprint.Blueprint;
-import me.rages.blueprint.data.blueprint.BlueprintDirection;
-import me.rages.blueprint.service.PluginService;
-import me.rages.blueprint.service.impl.factions.FactionService;
-import me.rages.blueprint.service.impl.skyblock.SkyblockService;
+import me.rages.blueprint.services.factions.FactionService;
+import me.rages.blueprint.services.skyblock.SkyblockService;
+import me.rages.reliableframework.pluginservice.PluginService;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
 public class BuildCheckService implements PluginService {
@@ -17,7 +16,7 @@ public class BuildCheckService implements PluginService {
     private FactionService factionService;
 
     @Override
-    public BuildCheckService setup(BlueprintPlugin plugin) {
+    public BuildCheckService setup(JavaPlugin plugin) {
         if (plugin.getServer().getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
             this.skyblockService = new SkyblockService();
         }

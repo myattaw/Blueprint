@@ -1,4 +1,4 @@
-package me.rages.blueprint.service.impl.worldedit;
+package me.rages.blueprint.services.worldedit;
 
 import com.google.common.io.Files;
 import com.sk89q.worldedit.bukkit.BukkitAdapter;

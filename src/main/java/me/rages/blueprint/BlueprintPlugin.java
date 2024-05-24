@@ -8,9 +8,9 @@ import me.rages.blueprint.config.LanguageFile;
 import me.rages.blueprint.data.blueprint.Blueprint;
 import me.rages.blueprint.generator.BlueprintGenerator;
 import me.rages.blueprint.modules.BlueprintModule;
-import me.rages.blueprint.service.ServiceManager;
-import me.rages.blueprint.service.impl.BuildCheckService;
-import me.rages.blueprint.service.impl.WorldEditService;
+import me.rages.blueprint.services.BuildCheckService;
+import me.rages.blueprint.services.WorldEditService;
+import me.rages.reliableframework.pluginservice.ServiceManager;
 import org.bukkit.Material;
 import org.bukkit.Tag;
 

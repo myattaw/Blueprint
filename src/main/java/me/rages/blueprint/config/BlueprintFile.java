@@ -2,13 +2,12 @@ package me.rages.blueprint.config;
 
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.blueprint.Blueprint;
+import me.rages.reliableframework.files.ConfigFile;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 
@@ -22,7 +21,8 @@ public class BlueprintFile extends ConfigFile {
     public BlueprintFile init() {
         ConfigurationSection blueprints = getConfig().getConfigurationSection("blueprints");
         // Iterate through each blueprint key
-        for (Map.Entry<String, Blueprint> entry : getPlugin().getBlueprintDataMap().entrySet()) {
+        BlueprintPlugin blueprintPlugin = (BlueprintPlugin) getPlugin();
+        for (Map.Entry<String, Blueprint> entry : blueprintPlugin.getBlueprintDataMap().entrySet()) {
             String key = entry.getKey();
             Blueprint value = entry.getValue();
             // Check if the section for the blueprint key exists in the configuration

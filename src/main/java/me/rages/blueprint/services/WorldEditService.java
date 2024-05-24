@@ -1,11 +1,12 @@
-package me.rages.blueprint.service.impl;
+package me.rages.blueprint.services;
 
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.blueprint.Blueprint;
-import me.rages.blueprint.service.PluginService;
-import me.rages.blueprint.service.impl.worldedit.WorldEdit7Reader;
-import me.rages.blueprint.service.impl.worldedit.WorldEditReader;
+import me.rages.blueprint.services.worldedit.WorldEdit7Reader;
+import me.rages.blueprint.services.worldedit.WorldEditReader;
+import me.rages.reliableframework.pluginservice.PluginService;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.io.File;
 import java.util.Map;
@@ -16,7 +17,7 @@ public class WorldEditService implements PluginService {
     private WorldEditReader worldEditReader;
 
     @Override
-    public WorldEditService setup(BlueprintPlugin plugin) {
+    public WorldEditService setup(JavaPlugin plugin) {
         Plugin foundPlugin = null;
         for (String name : pluginNames()) {
             if (plugin.getServer().getPluginManager().isPluginEnabled(name)) {
