@@ -17,6 +17,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.util.Vector;
 
 import java.util.Arrays;
+import java.util.concurrent.TimeUnit;
 
 public class ConfirmUI extends Gui {
 
@@ -69,6 +70,13 @@ public class ConfirmUI extends Gui {
                                         Arrays.stream(Message.BLUEPRINT_TASK_STARTED.getAllColorized())
                                                 .map(message -> message.replace("{time}", finalTime))
                                                 .forEach(getPlayer()::sendMessage);
+
+                                        if (blueprint.getPlaceCooldown() != 0) {
+                                            blueprint.getCooldowns().put(
+                                                    getPlayer().getUniqueId(),
+                                                    System.currentTimeMillis() + (blueprint.getPlaceCooldown() * 1_000L)
+                                            );
+                                        }
 
                                         blueprint.clearOutlines(getPlayer());
                                         PacketSender.clearHighlights(getPlayer());

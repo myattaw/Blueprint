@@ -8,6 +8,8 @@ import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.terminable.TerminableConsumer;
 import me.lucko.helper.terminable.module.TerminableModule;
 import me.lucko.helper.text3.Text;
+import me.lucko.helper.time.DurationFormatter;
+import me.lucko.helper.time.Time;
 import me.lucko.helper.utils.Players;
 import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Message;
@@ -29,7 +31,9 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
 import javax.annotation.Nonnull;
+import java.time.Instant;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public class BlueprintModule implements TerminableModule {
@@ -160,6 +164,11 @@ public class BlueprintModule implements TerminableModule {
 
                         Location loc = block.getLocation();
                         BuildCheckService buildCheckService = plugin.getServiceManager().getService(BuildCheckService.class);
+
+                        if (isOnCooldown(player, blueprint)) {
+                            return;
+                        }
+
                         // check if bp config is using player direction
                         if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(bpDirection), loc)) {
                             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -186,6 +195,24 @@ public class BlueprintModule implements TerminableModule {
                 }
             }
         }, 5L, 5L).bindWith(consumer);
+    }
+
+    private boolean isOnCooldown(Player player, Blueprint blueprint) {
+        if (blueprint.getCooldowns().containsKey(player.getUniqueId())) {
+            long expireTime = blueprint.getCooldowns().get(player.getUniqueId());
+            if (System.currentTimeMillis() > expireTime) {
+                return false;
+            } else {
+                // send cooldown message
+                player.sendMessage(
+                        Message.BLUEPRINT_ITEM_COOLDOWN.getColorized().replace("{time}",
+                                        DurationFormatter.CONCISE.format(Time.diffToNow(Instant.ofEpochMilli(expireTime)))
+                        )
+                );
+                return true;
+            }
+        }
+        return false;
     }
 
     public ItemStack getBlueprintItem(String name, int direction, int amount) {

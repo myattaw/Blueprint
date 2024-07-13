@@ -17,6 +17,7 @@ public enum Message {
     // Commands
     BLUEPRINT_NO_PERMISSION("blueprint-no-permission", "&cYou do not have access to this command."),
     BLUEPRINT_ITEM_RECEIVED("blueprint-item.received", "&7You have received a &9{name} blueprint&7."),
+    BLUEPRINT_ITEM_COOLDOWN("blueprint-item.cooldown", "&7You have to wait &9{time} &7before using again."),
     BLUEPRINT_ITEM_GIVEN("blueprint-item.given", "&7You have given &9{player} &7a &9{name} blueprint&7.");
 
     @Getter

@@ -35,6 +35,7 @@ public class BlueprintFile extends ConfigFile {
                 blueprints.set("use-fast-place", false);
                 blueprints.set("use-player-rotations", false);
                 blueprints.set("use-snap-to-chunk", false);
+                blueprints.set("cooldown", 300);
             }
             // Read values from the configuration and set them in the blueprint object
             value.setDisplayName(blueprints.getString(
@@ -46,6 +47,7 @@ public class BlueprintFile extends ConfigFile {
             value.setFastPlace(blueprints.getBoolean(key + ".use-fast-place", false));
             value.setUsePlayerRotation(blueprints.getBoolean(key + ".use-player-rotations", false));
             value.setSnapToChunk(blueprints.getBoolean(key + ".use-snap-to-chunk", false));
+            value.setPlaceCooldown(blueprints.getInt(key + ".cooldown", 0));
         }
         // Save the updated configuration to the file
         this.save();

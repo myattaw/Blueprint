@@ -37,13 +37,18 @@ public class Blueprint {
     @Getter @Setter private boolean fastPlace;
     @Getter @Setter private boolean snapToChunk;
     @Getter @Setter private boolean usePlayerRotation;
+    @Getter @Setter private int placeCooldown;
 
     private Map<UUID, Set<BlockPosition>> outlineCache = new HashMap<>();
+
+    @Getter
+    private final Map<UUID, Long> cooldowns;
 
     public Blueprint(String name) {
         this.name = Files.getNameWithoutExtension(name);
         this.blockPositions = new HashMap<>();
         this.points = new HashMap<>();
+        this.cooldowns = new HashMap<>();
         for (BlueprintDirection direction : BlueprintDirection.values()) {
             blockPositions.put(direction, new ArrayList<>());
         }
