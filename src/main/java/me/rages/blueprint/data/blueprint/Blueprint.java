@@ -57,7 +57,7 @@ public class Blueprint {
     public void sendOutline(Player player, Block block, BlueprintDirection direction) {
         clearOutlines(player);
         Set<BlockPosition> positions = new HashSet<>();
-        if (FloodgateApi.getInstance().isFloodgatePlayer(player.getUniqueId())) {
+        if (true) {
             // do below for bedrock players
             Points<Vector, Vector> data = points.get(direction);
             Util.getHollowCube(
