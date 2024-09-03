@@ -27,6 +27,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -221,6 +222,7 @@ public class BlueprintModule implements TerminableModule {
         ItemStack itemStack = ItemStackBuilder
                 .of(blueprint.getMaterial())
                 .enchant(Enchantment.DURABILITY)
+                .flag(ItemFlag.HIDE_ENCHANTS)
                 .name(blueprint.getDisplayName().replace("{name}", name))
                 .transformMeta(itemMeta -> {
                     List<String> itemLore = blueprint.getDisplayLore()

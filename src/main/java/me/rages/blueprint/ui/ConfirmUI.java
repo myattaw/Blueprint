@@ -78,7 +78,7 @@ public class ConfirmUI extends Gui {
                                             }
 
                                             blueprint.clearOutlines(getPlayer());
-                                            PacketSender.clearHighlights(getPlayer());
+//                                            PacketSender.clearHighlights(getPlayer());
                                             close();
                                         } else {
                                             getPlayer().sendMessage(ChatColor.RED + "Failed to find blueprint item in your inventory.");
