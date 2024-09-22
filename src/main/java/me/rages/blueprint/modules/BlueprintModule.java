@@ -4,6 +4,7 @@ import lombok.Getter;
 import me.lucko.helper.Commands;
 import me.lucko.helper.Events;
 import me.lucko.helper.Schedulers;
+import me.lucko.helper.event.filter.EventFilters;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.terminable.TerminableConsumer;
 import me.lucko.helper.terminable.module.TerminableModule;
@@ -124,6 +125,7 @@ public class BlueprintModule implements TerminableModule {
 
         Events.subscribe(PlayerInteractEvent.class)
                 .filter(event -> event.getItem() != null && event.getItem().hasItemMeta())
+                .filter(EventFilters.ignoreCancelled())
                 .handler(event -> {
 
                     ItemStack itemStack = event.getItem();

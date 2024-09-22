@@ -3,7 +3,6 @@ package me.rages.blueprint.services.factions;
 import com.massivecraft.factions.Board;
 import com.massivecraft.factions.FLocation;
 import com.massivecraft.factions.listeners.FactionsBlockListener;
-import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
 import me.rages.reliableframework.pluginservice.PluginService;
 import org.bukkit.Location;
@@ -14,8 +13,7 @@ import org.bukkit.util.Vector;
 import java.util.HashSet;
 import java.util.Set;
 
-public class FactionService implements PluginService {
-
+public class FactionService implements PluginService<FactionService> {
 
     private final Set<String> blockedFactionIds = new HashSet<>();
 

@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
 
-public class BuildCheckService implements PluginService {
+public class BuildCheckService implements PluginService<BuildCheckService> {
 
     private SkyblockService skyblockService;
     private FactionService factionService;
@@ -18,10 +18,11 @@ public class BuildCheckService implements PluginService {
     @Override
     public BuildCheckService setup(JavaPlugin plugin) {
         if (plugin.getServer().getPluginManager().isPluginEnabled("SuperiorSkyblock2")) {
-            this.skyblockService = new SkyblockService();
+            this.skyblockService = new SkyblockService().setup(plugin);
         }
+        System.out.println();
         if (plugin.getServer().getPluginManager().isPluginEnabled("Factions")) {
-            this.factionService = new FactionService();
+            this.factionService = new FactionService().setup(plugin);
         }
         return this;
     }

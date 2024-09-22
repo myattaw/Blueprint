@@ -3,8 +3,6 @@ blocked-faction-ids:
   - "-2"
   - "-1"
 
-settings:
-
 blueprint-item:
   type: PAPER
   name: "&5{name} Blueprint"

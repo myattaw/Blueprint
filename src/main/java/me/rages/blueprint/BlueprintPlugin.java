@@ -10,6 +10,7 @@ import me.rages.blueprint.generator.BlueprintGenerator;
 import me.rages.blueprint.modules.BlueprintModule;
 import me.rages.blueprint.services.BuildCheckService;
 import me.rages.blueprint.services.WorldEditService;
+import me.rages.blueprint.services.factions.FactionService;
 import me.rages.reliableframework.pluginservice.ServiceManager;
 import org.bukkit.Material;
 import org.bukkit.Tag;
