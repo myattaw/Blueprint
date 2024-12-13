@@ -1,9 +1,9 @@
 package me.rages.blueprint.services;
 
-import me.rages.blueprint.BlueprintPlugin;
 import me.rages.blueprint.data.Points;
 import me.rages.blueprint.services.factions.FactionService;
 import me.rages.blueprint.services.skyblock.SkyblockService;
+import me.rages.blueprint.util.Util;
 import me.rages.reliableframework.pluginservice.PluginService;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
@@ -34,6 +34,15 @@ public class BuildCheckService implements PluginService<BuildCheckService> {
 
         if (factionService != null) {
             return factionService.canBuild(player, points, loc);
+        }
+
+        for (int x : new int[]{points.getMin().getBlockX(), points.getMax().getBlockX()}) {
+            for (int z : new int[]{points.getMin().getBlockZ(), points.getMax().getBlockZ()}) {
+                Location cornerLocation = loc.clone().add(x, points.getMin().getBlockY(), z);
+                if (Util.isOutsideBorder(cornerLocation)) {
+                    return false;
+                }
+            }
         }
 
         return true;

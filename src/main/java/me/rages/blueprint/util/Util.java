@@ -1,5 +1,7 @@
 package me.rages.blueprint.util;
 
+import org.bukkit.Location;
+import org.bukkit.WorldBorder;
 import org.bukkit.util.Vector;
 
 import java.util.HashSet;
@@ -23,6 +25,15 @@ public class Util {
             }
         }
         return vectors;
+    }
+
+    public static boolean isOutsideBorder(Location location) {
+        WorldBorder worldBorder = location.getWorld().getWorldBorder();
+        double size = worldBorder.getSize() / 2.0;
+        double x = location.getX() - worldBorder.getCenter().getX();
+        double z = location.getZ() - worldBorder.getCenter().getZ();
+        if (x >= size || -x > size || z >= size || -z > size) return true;
+        return false;
     }
 
 }
