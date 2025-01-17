@@ -223,7 +223,7 @@ public class BlueprintModule implements TerminableModule {
         Blueprint blueprint = plugin.getBlueprintDataMap().get(name);
         ItemStack itemStack = ItemStackBuilder
                 .of(blueprint.getMaterial())
-                .enchant(Enchantment.DURABILITY)
+                .enchant(Enchantment.UNBREAKING)
                 .flag(ItemFlag.HIDE_ENCHANTS)
                 .name(blueprint.getDisplayName().replace("{name}", name))
                 .transformMeta(itemMeta -> {

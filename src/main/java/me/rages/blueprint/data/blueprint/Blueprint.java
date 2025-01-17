@@ -57,7 +57,7 @@ public class Blueprint {
     public void sendOutline(Player player, Block block, BlueprintDirection direction) {
         clearOutlines(player);
         Set<BlockPosition> positions = new HashSet<>();
-        if (true) {
+        if (false) {
             // do below for bedrock players
             Points<Vector, Vector> data = points.get(direction);
             Util.getHollowCube(
@@ -77,7 +77,7 @@ public class Blueprint {
             Schedulers.sync().runLater(() -> clearOutlines(player), 15, TimeUnit.SECONDS);
         } else {
             List<BlueprintBlock> bp = blockPositions.get(direction);
-            PacketSender.clearHighlights(player);
+//            PacketSender.clearHighlights(player);
             bp.forEach(blueprintBlock -> {
                 Vector pos = blueprintBlock.getPosition();
                 Location loc = block.getLocation().clone().add(pos);
