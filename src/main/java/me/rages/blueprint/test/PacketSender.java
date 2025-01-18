@@ -6,10 +6,19 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.wrappers.MinecraftKey;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.network.protocol.common.custom.GameTestAddMarkerDebugPayload;
+import net.minecraft.network.protocol.common.custom.GameTestClearMarkersDebugPayload;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.network.ServerGamePacketListenerImpl;
 import net.minecraft.world.level.material.MapColor;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Block;
+import org.bukkit.craftbukkit.v1_21_R1.entity.CraftPlayer;
 import org.bukkit.craftbukkit.v1_21_R1.util.CraftMagicNumbers;
 import org.bukkit.entity.Player;
 
@@ -19,27 +28,39 @@ import java.nio.charset.StandardCharsets;
 public class PacketSender {
 
     public static void sendBlockHighlight(Player player, Location location, Color color, int time) {
-        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.CUSTOM_PAYLOAD);
-        ByteBuf buffer = Unpooled.buffer();
-        final int x = location.getBlockX();
-        final int y = location.getBlockY();
-        final int z = location.getBlockZ();
-        buffer.writeLong(blockPosToLong(x, y, z));
-        int argb = (0xFF & 175) << 24 | (0xFF & color.getRed()) << 16 | (0xFF & color.getGreen()) << 8 | (0xFF & color.getBlue());
-        buffer.writeInt(argb);
-        writeString(buffer, "");
-        buffer.writeInt(time);
-        packet.getMinecraftKeys().write(0, new MinecraftKey("debug/game_test_add_marker"));
-        packet.getSpecificModifier(FriendlyByteBuf.class).write(0, new FriendlyByteBuf(buffer));
-        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+        sendClientBoundCustomPayloadPacket(
+                player,
+                new GameTestAddMarkerDebugPayload(// create GameTestAddMarkerDebugPayload
+                        new BlockPos(
+                                location.getBlockX(),
+                                location.getBlockY(),
+                                location.getBlockZ()
+                        ),
+                        color.getRGB(),// Convert to integer RGB
+                        "",// Text floating over the debug marker
+                        time// Duration in milliseconds, here it is infinite
+                )
+        );
     }
 
     public static void clearHighlights(Player player) {
-        PacketContainer packet = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.CUSTOM_PAYLOAD);
-        packet.getMinecraftKeys().write(0, new MinecraftKey("debug/game_test_clear"));
-        packet.getSpecificModifier(FriendlyByteBuf.class).write(0, new FriendlyByteBuf(Unpooled.buffer()));
-        ProtocolLibrary.getProtocolManager().sendServerPacket(player, packet);
+        sendClientBoundCustomPayloadPacket(
+                player,
+                new GameTestClearMarkersDebugPayload()
+        );
     }
+
+    public static void sendClientBoundCustomPayloadPacket(Player player, CustomPacketPayload payload) {
+        // Convert Bukkit Player to ServerPlayer
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+        ServerPlayer serverPlayer = craftPlayer.getHandle();
+        // Create Client boundCustomPayloadPacket
+        ClientboundCustomPayloadPacket packet = new ClientboundCustomPayloadPacket(payload);
+        // Send packet to player
+        ServerGamePacketListenerImpl connection = serverPlayer.connection;
+        connection.send(packet);
+    }
+
 
     private static long blockPosToLong(int x, int y, int z) {
         return ((long) x & 67108863L) << 38 | (long) y & 4095L | ((long) z & 67108863L) << 12;
@@ -58,7 +79,6 @@ public class PacketSender {
         wrap(packet, byteArray.length);
         packet.writeBytes(byteArray);
     }
-
 
     public static Color getColor(Material material) {
         net.minecraft.world.level.block.Block block = CraftMagicNumbers.getBlock(material);
