@@ -1,3 +1,7 @@
+settings:
+  dispenser-limit: 20
+  tile-entity-limit: -1
+
 blocked-faction-ids:
   - "-3"
   - "-2"
