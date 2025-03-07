@@ -175,6 +175,16 @@ public class BlueprintModule implements TerminableModule {
                         // check if bp config is using player direction
                         if (buildCheckService == null || buildCheckService.canBuild(player, blueprint.getPoints().get(bpDirection), loc)) {
                             if (event.getAction() == Action.RIGHT_CLICK_BLOCK) {
+
+                                // Don't allow placing generators nearby each other
+                                for (BlueprintGenerator generator : plugin.getBlueprintGenerators()) {
+                                    if (Objects.equals(loc.getWorld(), loc.getWorld()) && loc.distance(generator.getLocation()) <= 32) {
+                                        player.sendMessage(Message.BLUEPRINT_PLACEMENT_FAILED.getColorized());
+                                        return;
+                                    }
+                                }
+
+
                                 if (itemStack != null && name != null) {
                                     new ConfirmUI(plugin, itemStack, blueprint, bpDirection, player, loc).open();
                                 }

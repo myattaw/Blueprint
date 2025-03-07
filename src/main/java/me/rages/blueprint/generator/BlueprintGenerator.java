@@ -25,7 +25,7 @@ public class BlueprintGenerator {
     private String key; // key of the SchemBucket
     private int blockIndex; // current block index from List<SchemBlock>
     private BlueprintDirection direction; // the direction the player picked
-    private Location location;
+    @Getter private Location location;
     @Getter private Player player; // who placed the SchemBucket
     @Getter private boolean fastMode = false; // builds the schematic layer by layer
     @Getter private boolean snapToChunk = false; // builds the schematic layer by layer
